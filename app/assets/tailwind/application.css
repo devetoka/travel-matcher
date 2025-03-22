@@ -20,6 +20,6 @@
     }
 
     .input-class {
-        @apply mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2
+        @apply mt-1 block w-full text-sm text-gray-600 border border-gray-300 p-2
     }
 }

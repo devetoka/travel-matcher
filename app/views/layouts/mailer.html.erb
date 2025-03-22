@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <style>
-      /* Email styles need to be inline */
-    </style>
-  </head>
-
-  <body>
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  <style>
+      body { font-family: Arial, sans-serif; color: #1E40AF; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: linear-gradient(to right, #2563EB, #2DD4BF); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
+      .content { background: #FFFFFF; padding: 20px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+      .button { display: inline-block; padding: 10px 20px; background: #2563EB; color: white; text-decoration: none; border-radius: 5px; }
+      .button:hover { background: #1D4ED8; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Hi, <%= @user.first_name %>!</h1>
+  </div>
+  <div class="content">
     <%= yield %>
-  </body>
+
+    <p>The <%= APP_NAME %> Team</p>
+  </div>
+</div>
+</body>
 </html>

@@ -1,21 +1,28 @@
 Rails.application.routes.draw do
   # Auth routes
-  devise_for :users, controllers: { registrations: 'users/registrations'}, path: '', path_names: {
-    sign_in: 'login',
-    sign_out: 'logout',
-    sign_up: 'register',
-    account_update: 'users/:id/update',
-  }
-  as :user do
-    get 'login', to: 'devise/sessions#new', as: :login
-    delete 'logout', to: 'devise/sessions#destroy', as: :logout
-    get 'register', to: 'devise/registrations#new', as: :register
-    get 'users/:id/update', to: 'devise/registrations#edit', as: :edit_user
-  end
+  devise_for :users,
+             controllers: {
+               registrations: 'users/registrations',
+               passwords: 'users/passwords'
+             },
+             path: '',
+             path_names: {
+                sign_in: 'login',
+                sign_out: 'logout',
+                sign_up: 'register',
+                account_update: 'users/:id/update',
+              }
   # end of Auth routes
+  get 'login', to: 'devise/sessions#new', as: :login
+  delete 'logout', to: 'devise/sessions#destroy', as: :logout
+  get 'register', to: 'devise/registrations#new', as: :register
+  get 'users/:username/update', to: 'devise/registrations#edit', as: :edit_user
+  get 'users/:username/change-password', to: 'users#change_password', as: :change_password
 
 
-  resources :users, only: [:show]
+
+  resources :users, only: [:show], path: 'users', param: :username
+
 
 
 

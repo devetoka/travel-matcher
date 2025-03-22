@@ -1,0 +1,31 @@
+<!-- Profile Header -->
+<div class="flex items-center space-x-6">
+  <% if @user.profile_picture.present? %>
+    <%= image_tag @user.profile_picture, class: "w-24 h-24 rounded-full object-cover border-4 border-primary" %>
+  <% else %>
+    <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-2xl font-bold text-brand-color">
+      <%= @user.first_name[0] %><%= @user.last_name[0] %>
+    </div>
+  <% end %>
+  <div>
+    <h1 class="text-lg font-extrabold text-brand-color"><%= @user.full_name %></h1>
+    <p class="text-sm">Username: @<%= @user.username %></p>
+    <p class="text-gray-600 text-xs"><%= @user.location.presence || "Location not set" %></p>
+  </div>
+</div>
+
+<!-- Bio -->
+<div class="mt-8">
+  <h4 class="text-md font-bold text-brand-color">About Me</h4>
+  <p class="text-gray-600 text-sm mt-2"><%= @user.bio || "No bio yet." %></p>
+</div>
+
+<!-- Contact Info -->
+<div class="mt-8">
+  <h2 class="text-md font-bold text-brand-color">Contact</h2>
+  <p class="text-gray-600 text-sm mt-2">Email: <%= @user.email %></p>
+  <% if @user.phone_number.present? %>
+    <p class="text-gray-600 text-sm">Phone: <%= @user.phone_number %></p>
+  <% end %>
+  <p class="text-gray-600 text-sm">Preferred Contact: <%= @user.preferred_contact_method || "Not specified" %></p>
+</div>

@@ -18,7 +18,10 @@ class ApplicationController < ActionController::Base
                 :location,
                 :phone_number,
                 :preferred_contact_method,
-                :bio
+                :bio,
+                :password,
+                :password_confirmation,
+                :current_password
             )
         end
     end

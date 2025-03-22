@@ -1,0 +1,31 @@
+<% if flash[:notice] %>
+  <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+    <div class="flex">
+      <div class="ml-3">
+        <div class="mt-2 text-sm text-blue-700">
+
+          <div class="alert alert-info">
+            <p><%= flash[:notice] %></p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% if flash[:alert] %>
+  <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+    <div class="flex">
+      <div class="ml-3">
+        <div class="mt-2 text-sm text-blue-700">
+
+          <div class="alert alert-info">
+            <p><%= flash[:alert] %></p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
