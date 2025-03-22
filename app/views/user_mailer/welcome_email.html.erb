@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <style>
+      body { font-family: Arial, sans-serif; color: #1E40AF; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: linear-gradient(to right, #2563EB, #2DD4BF); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
+      .content { background: #FFFFFF; padding: 20px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+      .button { display: inline-block; padding: 10px 20px; background: #2563EB; color: white; text-decoration: none; border-radius: 5px; }
+      .button:hover { background: #1D4ED8; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Welcome, <%= @user.first_name %>!</h1>
+      </div>
+      <div class="content">
+        <p>Thanks for joining <%= APP_NAME %>! We're excited to help you connect with travelers and senders worldwide.</p>
+        <p>Your account details:</p>
+        <ul>
+          <li><strong>Name:</strong> <%= @user.full_name %></li>
+          <li><strong>Username:</strong> <%= @user.username %></li>
+          <li><strong>Email:</strong> <%= @user.email %></li>
+        </ul>
+        <p>Get started by creating your first post:</p>
+        <a href="<%= root_url %>" class="button">Explore Now</a>
+        <p style="margin-top: 20px;">Happy posting!</p>
+        <p>The <%= APP_NAME %> Team</p>
+      </div>
+    </div>
+  </body>
+</html>

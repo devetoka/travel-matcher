@@ -24,6 +24,13 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=travel_matcher_development
+    ports:
+      - "1234:5432"
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"  # SMTP port
+      - "8025:8025"  # Web UI port
 
 volumes:
   postgres_data:

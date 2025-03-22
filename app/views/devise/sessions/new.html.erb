@@ -1,0 +1,33 @@
+<%= render 'devise/shared/card' do %>
+
+    <h2 class="text-3xl font-extrabold text-center mb-6 text-gray-800">Welcome Back</h2>
+    <p class="text-center text-gray-500 mb-8">Sign in to connect with travelers</p>
+
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-6" }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+      <div class="field">
+        <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "input-class" %>
+      </div>
+
+      <div class="field">
+        <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.password_field :password, autocomplete: "current-password", class: "input-class" %>
+      </div>
+
+      <% if devise_mapping.rememberable? %>
+        <div class="field flex items-center">
+          <%= f.check_box :remember_me, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" %>
+          <%= f.label :remember_me, class: "ml-2 block text-sm text-gray-600" %>
+        </div>
+      <% end %>
+
+      <div class="actions">
+        <%= f.submit "Sign In", class: "w-full brand-btn-primary" %>
+      </div>
+    <% end %>
+
+    <div class="mt-6 text-center text-sm text-gray-600 space-y-2">
+      <%= render "devise/shared/links" %>
+    </div>
+<% end %>

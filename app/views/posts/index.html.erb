@@ -1,0 +1,21 @@
+<div class="container mx-auto px-4 py-8">
+
+  <h1 class="text-3xl font-extrabold text-primary mb-6"><%= APP_NAME %></h1>
+
+  <% if user_signed_in? %>
+    <%= link_to "New Post", root_path, class: "bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-hover transition duration-300 mb-6 inline-block" %>
+  <% else %>
+    <p class="text-text mb-6">Please <%= link_to "sign in", new_user_session_path, class: "text-secondary hover:text-secondary-hover" %> or <%= link_to "sign up", new_user_registration_path, class: "text-secondary hover:text-secondary-hover" %> to create a post.</p>
+  <% end %>
+
+  <div id="posts" class="space-y-6">
+    <% @posts.each do |post| %>
+      <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-300">
+        <h3 class="text-xl font-bold text-primary"><%= post.type.capitalize %>: <%= post.origin %> to <%= post.destination %></h3>
+        <p class="text-text mt-2"><strong>When:</strong> <%= post.date_range %></p>
+        <p class="text-gray-600 mt-2"><%= post.description %></p>
+        <p class="text-sm text-text mt-2">Posted by: <%= post.user&.full_name || "Unknown" %></p>
+      </div>
+    <% end %>
+  </div>
+</div>

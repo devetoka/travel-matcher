@@ -1,0 +1,78 @@
+<%= form_for(@user, as: :user, url: registration_path(@user), html: { method: :put, multipart: true, class: "space-y-4" }) do |f| %>
+  <%= render "devise/shared/error_messages", resource: @user %>
+
+  <div class="grid lg:grid-cols-2 lg:gap-4">
+    <!-- Left Column -->
+    <div class="space-y-4">
+      <!-- First Name -->
+      <div class="field">
+        <label class="text-sm font-medium text-gray-600">First Name *</label>
+        <%= f.text_field :first_name, required: true, autocomplete: "given-name", class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+      </div>
+      <!-- Email -->
+      <div class="field">
+        <label class="text-sm font-medium text-gray-600">Email</label>
+        <%= f.email_field :email, autocomplete: "email", disabled: true,  class: " bg-gray-300 mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+      </div>
+      <!-- Profile Picture -->
+      <div class="field">
+        <label class="text-sm font-medium text-gray-600">Profile Picture</label>
+        <% if @user.profile_picture.present? && @user.profile_picture_exists? %>
+          <div class="mt-2">
+            <%= image_tag "/uploads/users/#{@user.profile_picture}", class: "w-16 h-16 rounded-full object-cover" %>
+            <p class="text-xs text-gray-500 mt-1">Current picture</p>
+          </div>
+        <% end %>
+        <%= f.file_field :profile_picture, class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+      </div>
+
+      <!-- Location -->
+      <div class="field">
+        <label class="text-sm font-medium text-gray-600">Your Location</label>
+        <%= f.text_field :location, autocomplete: "address-level2", placeholder: "e.g., Berlin, Germany", class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+      </div>
+
+    </div>
+
+    <!-- Right Column -->
+    <div class="space-y-4">
+      <!-- Last Name -->
+      <div class="field">
+        <label class="text-sm font-medium text-gray-600">Last Name *</label>
+        <%= f.text_field :last_name, required: true, autocomplete: "family-name", class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+      </div>
+      <!-- Username -->
+      <div class="field">
+        <label class="text-sm font-medium text-gray-600">Username</label>
+        <%= f.text_field :username, autocomplete: "username", disabled: true, class: "input-class bg-gray-300" %>
+      </div>
+
+
+
+      <!-- Phone Number -->
+      <div class="field">
+        <label class="text-sm font-medium text-gray-600">Phone Number</label>
+        <%= f.text_field :phone_number, autocomplete: "tel", class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+      </div>
+
+      <!-- Preferred Contact -->
+      <div class="field">
+        <label class="text-sm font-medium text-gray-600">Preferred Contact</label>
+        <%= f.select :preferred_contact_method, options_for_select([["Email", "email"], ["Phone", "phone"], ["App Messaging", "app"]], @user.preferred_contact_method || "email"), {}, class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+      </div>
+
+
+    </div>
+  </div>
+
+  <!-- Bio (Full Width) -->
+  <div class="field mt-4">
+    <label class="text-sm font-medium text-gray-600">Bio</label>
+    <%= f.text_area :bio, class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2", rows: 4 %>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="actions mt-4">
+    <%= f.submit "Update Profile", class: "w-full brand-btn-primary" %>
+  </div>
+<% end %>
