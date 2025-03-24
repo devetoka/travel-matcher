@@ -1,0 +1,85 @@
+<div class="max-w-3xl mx-auto bg-white shadow-2xl p-8 rounded-lg transform transition-all hover:shadow-xl">
+  <h2 class="text-lg font-extrabold text-brand-color mb-6">Create a New Post</h2>
+
+  <%= form_with(model: @post, local: true, class: "space-y-4", html: { class: 'space-y-8 form-handler'}) do |f| %>
+    <%= render "shared/error_messages", resource: @post %>
+    <%= render "shared/flash" %>
+
+    <div class="field">
+      <label class="text-sm font-medium text-gray-600">Type</label>
+      <%= f.select :post_type, options_for_select([["Send Parcel", "sender"], %w[Traveling traveler]], @post.post_type),
+                   {},
+                   required: true,
+                   class: "input-class"
+      %>
+    </div>
+
+    <div class="field">
+      <label class="text-sm font-medium text-gray-600">Origin</label>
+      <%= f.text_field :origin,
+                       placeholder: "e.g., Berlin",
+                       required: true,
+                       class: "input-class"
+      %>
+    </div>
+
+    <div class="field">
+      <label class="text-sm font-medium text-gray-600">Destination</label>
+      <%= f.text_field :destination, placeholder: "e.g., Tokyo",
+                       required: true,
+                       class: "input-class" %>
+    </div>
+
+    <!-- Toggle for Date Input -->
+    <div class="field">
+      <label class="text-sm font-medium text-gray-600">Travel Dates</label>
+      <div class="mt-2">
+        <label class="inline-flex items-center">
+          <%= radio_button_tag :date_toggle, "exact", (params[:date_toggle] == "exact" || params[:date_toggle].blank?), class: "form-radio text-brand-color" %>
+          <span class="ml-2 text-sm text-gray-600">Choose exact dates</span>
+        </label>
+
+        <label class="inline-flex items-center ml-6">
+          <%= radio_button_tag :date_toggle, "range", params[:date_toggle] == "range", class: "form-radio text-brand-color" %>
+          <span class="ml-2 text-sm text-gray-600">Not sure? Enter approximate dates</span>
+        </label>
+      </div>
+
+
+      <!-- Exact Dates -->
+      <div id="exact-dates" class="mt-2 space-y-4 <%= 'hidden' if params[:date_toggle] == "range" %>">
+        <div>
+          <label class="text-sm font-medium text-gray-600">Start Date</label>
+          <%= f.date_field :start_date, class: "input-class" %>
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-600">End Date</label>
+          <%= f.date_field :end_date, class: "input-class" %>
+        </div>
+      </div>
+
+      <!-- Approximate Date Range -->
+      <div id="approx-range" class="mt-2  <%= 'hidden' if params[:date_toggle] == "exact" %>">
+        <label class="text-sm font-medium text-gray-600">Approximate Date Range</label>
+        <%= f.text_field :date_range, placeholder: "e.g., late March or next week", class: "input-class" %>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="text-sm font-medium text-gray-600">Description<%= " (optional for travelers)" if @post.post_type == "traveler" %></label>
+      <%= f.text_area :description, placeholder: @post.post_type == "traveler" ? "Optional: e.g., can carry 2kg" : "e.g., small package, 1kg, fragile",
+                      class: "input-class", rows: 4 %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit "Create Post",
+                   class: "w-full submit-handler bg-brand-color text-white py-2 px-4 rounded-lg hover:bg-brand-color transition duration-300",
+          data: { disable_with: "Creating..." }
+      %>
+    </div>
+  <% end %>
+
+  <div class="mt-4 text-center text-xs text-gray-600">
+    <%= link_to "Back", posts_path, class: "text-brand-color hover:text-brand-color" %>
+  </div>
+</div>

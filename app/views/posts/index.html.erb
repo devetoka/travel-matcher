@@ -1,21 +1,75 @@
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4">
+  <h1 class="text-2xl font-bold text-brand-color mb-6">Travel Matcher</h1>
 
-  <h1 class="text-3xl font-extrabold text-primary mb-6"><%= APP_NAME %></h1>
+  <%= render 'posts/filter'%>
 
-  <% if user_signed_in? %>
-    <%= link_to "New Post", root_path, class: "bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-hover transition duration-300 mb-6 inline-block" %>
-  <% else %>
-    <p class="text-text mb-6">Please <%= link_to "sign in", new_user_session_path, class: "text-secondary hover:text-secondary-hover" %> or <%= link_to "sign up", new_user_registration_path, class: "text-secondary hover:text-secondary-hover" %> to create a post.</p>
-  <% end %>
+  <!-- Posts Container -->
+  <div class="max-w-7xl mx-auto mt-10 overflow-y-auto relative">
+    <!-- Sticky Filter Bar -->
 
-  <div id="posts" class="space-y-6">
-    <% @posts.each do |post| %>
-      <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-300">
-        <h3 class="text-xl font-bold text-primary"><%= post.type.capitalize %>: <%= post.origin %> to <%= post.destination %></h3>
-        <p class="text-text mt-2"><strong>When:</strong> <%= post.date_range %></p>
-        <p class="text-gray-600 mt-2"><%= post.description %></p>
-        <p class="text-sm text-text mt-2">Posted by: <%= post.user&.full_name || "Unknown" %></p>
+    <div class=" hidden text-center text-gray-500 md:block">
+      <% if user_signed_in? %>
+        <small>
+        Didn't see a post that fits? Create
+         <%= link_to "New Post", new_post_path, class: "text-xs text-brand-color font-medium hover:underline" %>
+        </small>
+      <% end %>
+    </div>
+    <!-- Posts List -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:mt-12">
+      <% @posts.each do |post| %>
+        <div class="bg-white shadow-md rounded-md p-6 hover:shadow-xl transition-shadow duration-300">
+          <h3 class="text-lg font-semibold text-brand-color">
+            <% if  post.post_type == 'sender' %>
+                  Sending
+                  <svg style="display: inline" class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                  </svg>
+                  from :
+            <% else %>
+
+                  Traveling
+                  <svg style="display: inline" class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                  </svg>
+                  from:
+           <% end %>
+            <%= post.origin %> to <%= post.destination %>
+          </h3>
+          <p class="text-sm text-gray-500 mt-1"><strong>When:</strong>
+            <%= (post.date_range || "between <strong class='text-primary'>#{post.formatted_start_date}</strong> and <strong class='text-primary'>#{post.formatted_end_date}</strong>").html_safe %>
+          </p>
+            <% if post.description.present? %>
+            <p class="text-sm text-gray-600 mt-2 truncate"><%= post.description %></p>
+          <% end %>
+          <p class="text-xs text-gray-400 mt-2">By <%= link_to post.user.full_name, user_path(username: post.user.username), class: "text-brand-color hover:underline" %> on <%= post.created_at.strftime("%b %d, %Y") %></p>
+          <% if user_signed_in? && post.user == current_user %>
+            <div class="mt-4 flex space-x-4">
+              <%= link_to "Edit", edit_post_path(post), class: "text-sm text-brand-color hover:underline" %>
+              <%= link_to "Delete", post_path(post), method: :delete, data: { confirm: "Are you sure?" }, class: "text-sm text-red-500 hover:underline" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Sign In Prompt (if not signed in) -->
+    <% unless user_signed_in? %>
+      <div class="mt-6 text-center text-sm text-gray-600 pb-6">
+        Please <%= link_to "sign in", new_user_session_path, class: "text-brand-color hover:underline" %> or <%= link_to "sign up", new_user_registration_path, class: "text-brand-color hover:underline" %> to create a post.
       </div>
     <% end %>
   </div>
+
+  <div class=" text-center text-gray-500 mt-5">
+    <% if user_signed_in? %>
+      <small>
+        Didn't see a post that fits? Create
+        <%= link_to "New Post", new_post_path, class: "text-xs text-brand-color font-medium hover:underline" %>
+      </small>
+    <% end %>
+  </div>
+
+  <!-- Pagination (Outside Scrollable Container) -->
+  <%= render 'shared/pagination', resource: @posts %>
 </div>

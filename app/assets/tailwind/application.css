@@ -6,6 +6,33 @@
     --color-brand-color: #1e2939
 }
 
+/* For Tailwind, add these classes to your pagination div or use a custom CSS file */
+.pagination a, .pagination span {
+    @apply text-sm font-medium px-3 py-1 rounded-full transition duration-200;
+}
+
+.pagination a {
+    @apply text-brand-color hover:bg-brand-color hover:text-white;
+}
+
+.pagination .current {
+    @apply bg-brand-color text-white shadow-md;
+}
+
+.pagination .disabled {
+    @apply text-gray-400 cursor-not-allowed;
+}
+
+.pagination a, .pagination span {
+    padding-inline: calc(var(--spacing)* 1.5) !important;
+}
+
+/* app/assets/stylesheets/application.css */
+.pagination .first,
+.pagination .last {
+    display: none;
+}
+
 @layer components {
     .brand-btn-primary {
         @apply cursor-pointer bg-gradient-to-r from-blue-600 to-teal-500 text-white py-3 px-4  hover:from-blue-700 hover:to-teal-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-300

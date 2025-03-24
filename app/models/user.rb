@@ -3,6 +3,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,:recoverable, :rememberable, :validatable, :confirmable
 
+  has_many :posts
   has_one_attached :profile_picture
 
   validates :username, presence: true, uniqueness: true, length: { minimum: 4, maximum: 20}
@@ -18,7 +19,6 @@ class User < ApplicationRecord
   end
 
   def profile_picture_exists?
-    # puts "here , here" + profile_picture.methods.join(" ").to_s
     profile_picture.present? && profile_picture.name.present?
   end
 

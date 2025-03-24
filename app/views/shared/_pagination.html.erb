@@ -1,0 +1,5 @@
+<% if resource.present? %>
+  <div class="max-w-7xl mx-auto mt-10 flex justify-center space-x-1">
+    <%= paginate resource, prev_label: "←", next_label: "→" %>
+  </div>
+<% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_22_114754) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_22_220714) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,6 +42,26 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_22_114754) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "posts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "post_type", null: false
+    t.string "origin", null: false
+    t.string "destination", null: false
+    t.string "date_range"
+    t.text "description"
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["destination"], name: "index_posts_on_destination"
+    t.index ["end_date"], name: "index_posts_on_end_date"
+    t.index ["origin"], name: "index_posts_on_origin"
+    t.index ["post_type"], name: "index_posts_on_post_type"
+    t.index ["start_date", "end_date", "origin", "destination", "post_type"], name: "idx_on_start_date_end_date_origin_destination_post__014aa5d399"
+    t.index ["start_date"], name: "index_posts_on_start_date"
+    t.index ["user_id"], name: "index_posts_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -62,7 +82,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_22_114754) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.string "profile_picture"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
@@ -70,4 +89,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_22_114754) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "posts", "users"
 end
