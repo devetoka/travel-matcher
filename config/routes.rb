@@ -21,8 +21,19 @@ Rails.application.routes.draw do
 
 
 
-  resources :users, only: [:show], path: 'users', param: :username
-  resources :posts
+  resources :users, only: [:show], path: 'users', param: :username do
+    member do
+      get 'posts', to: 'users#posts', as: :posts
+      get 'requests', to: 'users#requests', as: :requests
+    end
+  end
+
+  resources :requests, only: [:create] do
+    member do
+      post 'accept', to: 'requests#accept', as: :accept
+      post 'reject', to: 'requests#reject', as: :reject
+    end
+  end
 
 
 
@@ -33,6 +44,6 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Defines the root path route ("/")
+  resources :posts
   root "posts#index"
 end

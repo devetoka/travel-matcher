@@ -3,7 +3,8 @@
 @theme {
     --color-primary: #1D4ED8;
     --color-secondary: #0D9488;
-    --color-brand-color: #1e2939
+    --color-brand-color: #2563eb;
+    --color-brand-color-dark: #1e40af;
 }
 
 /* For Tailwind, add these classes to your pagination div or use a custom CSS file */

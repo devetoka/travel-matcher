@@ -1,11 +1,11 @@
-<div class="max-w-3xl mx-auto bg-white shadow-2xl p-8 rounded-lg transform transition-all hover:shadow-xl">
+<div class="max-w-3xl mx-auto border-gray-300 border-solid border-2 bg-white shadow-2xl p-8 rounded-lg transform transition-all hover:shadow-xl">
 
   <%= render "shared/flash" %>
   <h2 class="text-lg font-extrabold text-brand-color mb-6"><%= @post.post_type.capitalize %> Post</h2>
 
   <p class="text-sm text-gray-600"><strong>Origin:</strong> <%= @post.origin %></p>
   <p class="text-sm text-gray-600 mt-2"><strong>Destination:</strong> <%= @post.destination %></p>
-  <p class="text-sm text-gray-600 mt-2"><strong>When:</strong> <%= @post.date_range || "#{@post.start_date} - #{@post.end_date}" %></p>
+  <p class="text-sm text-gray-600 mt-2"><strong>When:</strong> <%= @post.date_range.presence || "#{@post.formatted_start_date} - #{@post.formatted_end_date}" %></p>
   <% if @post.description.present? %>
     <p class="text-sm text-gray-600 mt-2"><strong>Description:</strong> <%= @post.description %></p>
   <% end %>
@@ -18,7 +18,71 @@
     </div>
   <% end %>
 
-  <div class="mt-4 text-center text-xs text-gray-600">
-    <%= link_to "Back", posts_path, class: "text-brand-color hover:text-brand-color" %>
-  </div>
+  <% if user_signed_in? && @post.user != current_user %>
+<!--    if this post already has a request by the currently logged in user, dont show the request or accept button-->
+    <% if @request.requester != current_user %>
+      <% if @post.post_type == "traveler" %>
+        <h3 class="text-gray-600 mt-10">Send a Request to the traveler</h3>
+        <hr/>
+        <%= form_with model: @request, local: true, class: "mt-4 space-y-4" do |f| %>
+          <%= f.hidden_field :post_id, value: @post.id %>
+          <div>
+            <%= f.text_area :description, rows: 7, class: "mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-color focus:ring focus:ring-brand-color focus:ring-opacity-50", required: true %>
+            <%= f.label :description, "Describe what you are sending. Provide sufficient info so the traveler may accept your requests", class: "block  mt-2 text-xs text-danger font-medium text-gray-600" %>
+          </div>
+          <div class="flex justify-between">
+            <%= link_to "Back to Posts", root_path, class: "mt-6 inline-block text-xs text-brand-color hover:underline" %>
+            <%= f.submit "Send Request", class: " cursor-pointer brand-btn-primary text-white text-xs font-medium py-2 px-4 rounded-md hover:bg-opacity-90 transition" %>
+          </div>
+        <% end %>
+      <% elsif @post.post_type == "sender" %>
+        <div class="flex justify-between">
+          <%= link_to "Back to Posts", root_path, class: "mt-6 inline-block self-end text-sm text-brand-color hover:underline" %>
+          <%= form_with url: requests_path, method: :post, data: { turbo: true } do %>
+            <%= hidden_field_tag "request[post_id]", @post.id %>
+            <%= hidden_field_tag "request[status]", "accepted" %>
+            <%= submit_tag "Accept Post", class: "brand-btn-primary mt-4 inline-block text-xs" %>
+          <% end %>
+
+        </div>
+      <% end %>
+    <% else %>
+      <p class="text-sm mt-10 p-5 bg-blue-50 text-blue-700">You already <%= @request.accepted? ? 'accepted' : 'sent a request to' %> this post</p>
+      <div class="text-right">
+        <%= link_to "Back to Posts", root_path, class: "mt-6 inline-block self-end text-sm text-brand-color hover:underline" %>
+
+      </div>
+    <% end %>
+  <% end %>
+
+
 </div>
+
+
+<!-- Received Requests -->
+<div class="container mx-auto px-4 py-12  max-w-4xl">
+<% if @post.user == current_user %>
+  <div class="my-8">
+    <h2 class="text-2xl font-semibold text-brand-color mb-6 text-center">Requests Received</h2>
+
+    <!-- Filters (Optional) -->
+    <%= render 'requests/request_filters', post: @post %>
+
+    <% if @requests.any? %>
+      <div class="space-y-6">
+        <% @requests.each_with_index do |request, index| %>
+          <%= render 'requests/request', {request: request, post: @post} %>
+        <% end %>
+      </div>
+
+      <%= render 'shared/pagination', resource: @requests %>
+    <% else %>
+      <p class="text-center text-gray-500 text-sm">No requests received for this post yet.</p>
+    <% end %>
+
+
+  </div>
+<% end %>
+</div>
+
+

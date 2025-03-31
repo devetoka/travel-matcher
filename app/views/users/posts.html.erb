@@ -1,0 +1,14 @@
+<div class="  mt-4 md:flex justify-space-around space-y-8">
+  <div class=" md:ml-2  md:p-8 py-0 flex-1">
+    <%= render 'posts/filter',
+               form_url: posts_user_path(username: current_user.username)
+    %>
+    <div class="grid grid-cols-1 mt-5 md:grid-cols-2 gap-6">
+      <% @posts.each do |post| %>
+       <%= render 'posts/post', post: post %>
+      <% end %>
+    </div>
+
+    <%= render 'shared/pagination', resource: @posts %>
+  </div>
+</div>

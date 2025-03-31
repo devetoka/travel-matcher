@@ -9,7 +9,7 @@ const initFormSubmission = () => {
 
     form.addEventListener("submit", function() {
         submitBtn.disabled = true;
-        submitBtn.value = "Creating..."; // Matches data-disable-with
+        submitBtn.value = "Working..."; // Matches data-disable-with
     });
 }
 

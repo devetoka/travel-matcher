@@ -4,6 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,:recoverable, :rememberable, :validatable, :confirmable
 
   has_many :posts
+  has_many :requests, foreign_key: "requester_id", dependent: :destroy
+  has_many :received_requests, through: :posts, source: :requests
   has_one_attached :profile_picture
 
   validates :username, presence: true, uniqueness: true, length: { minimum: 4, maximum: 20}
@@ -20,6 +22,13 @@ class User < ApplicationRecord
 
   def profile_picture_exists?
     profile_picture.present? && profile_picture.name.present?
+  end
+
+  def all_requests
+    Request
+      .where(requester_id: id)
+      .or(Request.where(post_id: posts.select(:id)))
+      .includes(:requester, post: :user)
   end
 
 

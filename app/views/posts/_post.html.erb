@@ -1,0 +1,50 @@
+<div class="relative bg-white overflow-hidden border-gray-200 border-solid border-1  rounded-xl bg-gray-100 p-1 hover:shadow-lg hover:bg-gray-200 transition-shadow duration-300">
+  <%= link_to post_path(post), class: "block" do %>
+    <div class=" rounded-lg p-6 h-full transition-all duration-300 hover:bg-gray-200">
+      <h3 class="text-lg font-semibold text-gray-800">
+        <% if post.post_type == 'sender' %>
+          Sending
+          <svg class="inline h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+          from:
+        <% else %>
+          Traveling
+          <svg class="inline h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+          </svg>
+          from:
+        <% end %>
+        <%= post.origin %> to <%= post.destination %>
+      </h3>
+
+      <p class="text-sm text-gray-600 mt-1">
+        <strong class="text-gray-700">When:</strong>
+        <%= (post.date_range.presence || "between <strong class='text-blue-500'>#{post.formatted_start_date}</strong> and <strong class='text-blue-500'>#{post.formatted_end_date}</strong>").html_safe %>
+      </p>
+
+      <% if post.description.present? %>
+        <p class="text-sm text-gray-700 mt-2 truncate"><%= post.description %></p>
+      <% end %>
+
+      <div class="mt-2 text-sm text-gray-600">
+        <strong class="text-gray-700">Requests:</strong>
+        <span class="text-green-500">
+          <%= post.read_attribute(:requests_count) || 0 %>
+        </span>
+      </div>
+
+
+      <p class="text-xs text-gray-500 mt-2">
+        By <%= link_to post.user.full_name, user_path(username: post.user.username), class: "text-blue-500 hover:underline" %>
+        on <%= post.created_at.strftime("%b %d, %Y") %>
+      </p>
+
+      <div class="text-right">
+        <% if user_signed_in? && post.user != current_user %>
+          <%= link_to "View Details", post_path(post), class: "mt-2 inline-block hover:bg-white text-sm hover:text-secondary py-3 px-1  text-xs text-gray-600 ml-4" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -1,5 +1,7 @@
 class Post < ApplicationRecord
   belongs_to :user
+  has_many :requests, dependent: :destroy
+
   before_save :set_dates_from_range, if: -> { date_range.present? }
   before_save :prevent_duplicate, if: -> { start_date.present? && end_date.present? }
 
@@ -21,7 +23,6 @@ class Post < ApplicationRecord
             length: { maximum: 50 }, allow_blank: true
   validate :end_date_cannot_be_before_start_date
   validate :date_range_format, if: -> { date_range.present? }
-  validate :prevent_duplicate
 
   def formatted_start_date
     start_date.strftime('%B %d, %Y') if start_date.present?
@@ -31,16 +32,27 @@ class Post < ApplicationRecord
     end_date.strftime('%B %d, %Y') if end_date.present?
   end
 
+  def self.with_request_count
+    left_joins(:requests)
+      .select("posts.*, COUNT(requests.id) AS requests_count")
+      .group("posts.id")
+      .order(created_at: :desc)
+  end
+
   private
 
   def prevent_duplicate
-    self.where(
+    if self.class.where(
+      user: user,
       origin: origin,
       destination: destination,
       start_date: start_date,
       end_date: end_date,
-      post_type: post_type,
-    ).exists?
+      post_type: post_type
+    ).where.not(id: id).exists? # Exclude itself during update
+      errors.add(:base, 'Duplicate record exists')
+      throw(:abort) # Prevent saving
+    end
   end
 
   private

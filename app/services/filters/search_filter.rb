@@ -5,7 +5,7 @@ module Filters
     def apply(scope)
       return scope unless @params[:search].present?
       scope.where(
-        "origin ILIKE :search OR destination ILIKE :search OR description ILIKE :search",
+        "posts.origin ILIKE :search OR posts.destination ILIKE :search OR posts.description ILIKE :search",
         search: "%#{@params[:search]}%"
       )
     end

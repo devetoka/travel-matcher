@@ -1,0 +1,39 @@
+
+
+<div class="flex flex-col sm:flex-row justify-center items-center mb-8 space-y-4 sm:space-y-0 sm:space-x-6">
+  <!-- Status Tabs -->
+  <div class="inline-flex rounded-full bg-gray-100 p-1 shadow-sm">
+    <%= link_to "All", url_for(params: request.query_parameters.merge(status:nil, direction: params[:direction], milestone: params[:milestone], page: params[:page])), class: "px-4 py-2 rounded-full text-sm font-medium #{params[:status].blank? ? 'bg-brand-color text-white' : 'text-gray-600 hover:text-brand-color'}" %>
+    <%= link_to "Pending", url_for(params: request.query_parameters.merge(status: "pending", direction: params[:direction], milestone: params[:milestone], page: params[:page])), class: "px-4 py-2 rounded-full text-sm font-medium #{params[:status] == 'pending' ? 'bg-brand-color text-white' : 'text-gray-600 hover:text-brand-color'}" %>
+    <%= link_to "Accepted", url_for(params: request.query_parameters.merge(status: "accepted", direction: params[:direction], milestone: params[:milestone], page: params[:page])), class: "px-4 py-2 rounded-full text-sm font-medium #{params[:status] == 'accepted' ? 'bg-brand-color text-white' : 'text-gray-600 hover:text-brand-color'}" %>
+    <%= link_to "Rejected", url_for(params: request.query_parameters.merge(status: "rejected", direction: params[:direction], milestone: params[:milestone], page: params[:page])), class: "px-4 py-2 rounded-full text-sm font-medium #{params[:status] == 'rejected' ? 'bg-brand-color text-white' : 'text-gray-600 hover:text-brand-color'}" %>
+  </div>
+
+  <!-- Direction Dropdown -->
+  <% unless post.present? %>
+  <div class="relative">
+    <%= form_tag url_for, method: :get, class: "inline-flex" do %>
+      <%= hidden_field_tag :status, params[:status] %>
+      <%= hidden_field_tag :milestone, params[:milestone] %>
+      <%= hidden_field_tag :page, params[:page] %>
+      <%= select_tag :direction, options_for_select([["All Directions", ""], %w[Sent sent], %w[Received received]], params[:direction]), onchange: "this.form.submit()", class: "appearance-none bg-white border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-color" %>
+      <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+          <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </span>
+    <% end %>
+  </div>
+  <% end %>
+
+  <!-- Milestone Dropdown -->
+  <div class="relative">
+    <%= form_tag url_for, method: :get, class: "inline-flex" do %>
+      <%= hidden_field_tag :status, params[:status] %>
+      <%= hidden_field_tag :direction, params[:direction] %>
+      <%= hidden_field_tag :page, params[:page] %>
+      <%= select_tag :milestone, options_for_select([["All Progress", ""], ["Pending Handover", "pending_handover"], ["Handed Over", "handed_over"], %w[Delivered delivered]], params[:milestone]), onchange: "this.form.submit()", class: "appearance-none bg-white border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-color" %>
+      <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+          <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </span>
+    <% end %>
+  </div>
+</div>

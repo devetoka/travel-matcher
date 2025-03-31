@@ -4,6 +4,7 @@ import {initNavbar} from "./navbar";
 import {initFormSubmission} from "./form";
 import {initPostDateToggler, mobileFilter, postCustomDateFilter} from "./posts";
 import {initFileUploadCheck} from "./file";
+import {showModal, hideModal, init} from "./request";
 
 const initializeScripts = () => {
   initNavbar();
@@ -12,6 +13,9 @@ const initializeScripts = () => {
   initFormSubmission()
   postCustomDateFilter()
   mobileFilter()
+  showModal()
+  hideModal()
+  init()
 };
 
 // Use turbo:load for both initial and subsequent loads

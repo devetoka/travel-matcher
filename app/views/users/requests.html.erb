@@ -1,0 +1,38 @@
+<div class="container mx-auto px-4 py-12 max-w-4xl">
+  <h1 class="text-3xl font-bold text-brand-color mb-10 text-center tracking-tight">Your Requests</h1>
+
+  <!-- Filters -->
+  <%= render 'requests/request_filters', post: nil %>
+
+  <% if @requests.any? %>
+    <div class="space-y-6">
+      <% @requests.each_with_index do |request, index| %>
+        <%= render 'requests/request', {request: request, post: nil} %>
+      <% end %>
+    </div>
+
+    <!-- Pagination -->
+    <%= render 'shared/pagination', resource: @requests %>
+  <% else %>
+    <div class="text-center py-12">
+      <p class="text-lg text-gray-500">You have no requests yet.</p>
+      <p class="mt-2 text-sm text-gray-400">Start by browsing posts or creating your own!</p>
+      <%= link_to "Browse Posts", root_path, class: "mt-4 inline-block text-brand-color hover:underline font-medium" %>
+    </div>
+  <% end %>
+
+  <!-- Single Modal -->
+  <div id="request-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden z-50 transition-opacity duration-300">
+    <div class="bg-white rounded-xl p-8 max-w-md w-full shadow-2xl transform transition-all duration-300 scale-95 modal-open:scale-100">
+      <h2 class="text-2xl font-semibold text-brand-color mb-6">Post Details</h2>
+      <div class="space-y-4 text-gray-700" id="modal-content">
+        <p class="text-sm"><span class="font-medium">Type:</span> <span id="modal-type"></span></p>
+        <p class="text-sm"><span class="font-medium">Route:</span> <span id="modal-route"></span></p>
+        <p class="text-sm"><span class="font-medium">When:</span> <span id="modal-dates"></span></p>
+        <p class="text-sm"><span class="font-medium">Description:</span> <span id="modal-description"></span></p>
+        <p class="text-sm"><span class="font-medium">Posted by:</span> <a id="modal-user" class="text-brand-color hover:underline"></a></p>
+      </div>
+      <button onclick="hideModal()" class="mt-6 w-full bg-brand-color text-white py-2 px-4 rounded-full font-medium hover:bg-opacity-90 transition-colors duration-200">Close</button>
+    </div>
+  </div>
+</div>

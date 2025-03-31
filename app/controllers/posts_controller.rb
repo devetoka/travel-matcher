@@ -7,6 +7,8 @@ class PostsController < ApplicationController
   end
 
   def show
+    @requests = RequestFilterService.new(request_params.merge(username: @post.user.username)).call(@post.requests)
+                                    .page(params[:page])
   end
 
   def new
@@ -37,7 +39,7 @@ class PostsController < ApplicationController
   def destroy
     if @post.user == current_user
       @post.destroy
-      redirect_to posts_path, notice: "Post deleted successfully!"
+      redirect_to posts_user_path(username: current_user.username), notice: "Post deleted successfully!"
     else
       redirect_to root_path, alert: "You can only delete your own posts"
     end
@@ -51,5 +53,9 @@ class PostsController < ApplicationController
   ''
   def post_params
     params.require(:post).permit(:post_type, :origin, :destination, :date_range, :start_date, :end_date, :description)
+  end
+
+  def request_params
+    params.permit(:status, :direction, :milestone, :username)
   end
 end

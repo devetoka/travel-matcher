@@ -5,7 +5,7 @@ class PostFilterService
     @params = params
   end
 
-  def call(scope = Post.all.order(created_at: :desc))
+  def call(scope = Post.with_request_count)
     filters.reduce(scope) do |scope, filter|
       filter.new(@params).apply(scope)
     end
