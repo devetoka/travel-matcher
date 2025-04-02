@@ -22,6 +22,12 @@ class Request < ApplicationRecord
     post.post_type == "traveler"
   end
 
+  def get_contact(current_user)
+    return nil unless current_user || accepted?
+
+    requester == current_user ? post.user : requester
+  end
+
   private
 
   def prevent_duplicate_request

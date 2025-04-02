@@ -10,14 +10,13 @@ class RequestsController < ApplicationController
       message = @request.accepted? ? 'Post accepted' : 'Request sent'
       redirect_back fallback_location: post_path(@request.post), notice: "#{message} successfully!"
     else
-      flash[:alert] = "Failed to send request: #{@request.errors.full_messages.join(', ')}"
-      redirect_back fallback_location: post_path(@request.post)
+      redirect_back fallback_location: post_path(@request.post), alert: "Failed to send request: #{@request.errors.full_messages.join(', ')}"
     end
   end
 
   def accept
     if @request.update(status: "accepted")
-      redirect_back  fallback_location: post_path(@request.post), notice: "Request accepted! Contact info is now available."
+      redirect_back  fallback_location: post_path(@request.post), notice: "Request accepted! Contact info is now available below"
     else
       redirect_back  fallback_location: post_path(@request.post), alert: "Failed to accept request."
     end

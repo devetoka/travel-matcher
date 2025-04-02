@@ -13,9 +13,9 @@ const showModal = (element = null) => {
     document.getElementById('modal-user').href = element.dataset.postUserPath;
 
     // Show modal
-    modal.classList?.remove('hidden');
-    modal.querySelector('.modal-open').classList?.remove('scale-95');
-    modal.querySelector('.modal-open').classList?.add('scale-100');
+    modal?.classList.remove('hidden');
+    modal.querySelector('.modal-open')?.classList.remove('scale-95');
+    modal.querySelector('.modal-open')?.classList?.add('scale-100');
 }
 
 function hideModal() {

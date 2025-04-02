@@ -1,14 +1,13 @@
 class PostsController < ApplicationController
   before_action :authenticate_user!, except: [:index]
   before_action :set_post, only: [:show, :edit, :update, :destroy]
+  before_action :check_owner, only: [:show]
 
   def index
     @posts = PostFilterService.new(params).call.page(params[:page])
   end
 
   def show
-    @requests = RequestFilterService.new(request_params.merge(username: @post.user.username)).call(@post.requests)
-                                    .page(params[:page])
   end
 
   def new
@@ -55,7 +54,18 @@ class PostsController < ApplicationController
     params.require(:post).permit(:post_type, :origin, :destination, :date_range, :start_date, :end_date, :description)
   end
 
+  def check_owner
+    @requests = nil
+    if @post.user == current_user
+      @requests = RequestFilterService.new(request_params.merge(username: @post.user.username)).call(@post.requests)
+                                      .page(params[:page])
+    else
+      puts "here " + Request.where(post: @post, requester: current_user).first.presence.inspect
+      @request = Request.where(post: @post, requester: current_user).first.presence || Request.new
+    end
+  end
+
   def request_params
-    params.permit(:status, :direction, :milestone, :username)
+    params.permit(:id, :status, :direction, :milestone, :username)
   end
 end

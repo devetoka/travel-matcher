@@ -11,7 +11,7 @@
   <% end %>
   <p class="text-xs text-gray-600 mt-4">Posted by: <%= link_to @post.user.full_name, user_path(@post.user), class: "text-brand-color hover:text-brand-color" %> on <%= @post.created_at.strftime("%B %d, %Y") %></p>
 
-  <% if user_signed_in? && @post.user == current_user %>
+  <% if user_signed_in? && @post.user == current_user &&  !@requests.any? %>
     <div class="mt-6 space-x-4">
       <%= link_to "Edit", edit_post_path(@post), class: "text-brand-color hover:text-brand-color" %>
       <%= link_to "Delete", post_path(@post), method: :delete, data: { confirm: "Are you sure?" }, class: "text-brand-color hover:text-brand-color" %>
@@ -19,8 +19,7 @@
   <% end %>
 
   <% if user_signed_in? && @post.user != current_user %>
-<!--    if this post already has a request by the currently logged in user, dont show the request or accept button-->
-    <% if @request.requester != current_user %>
+    <% if @request.new_record? %>
       <% if @post.post_type == "traveler" %>
         <h3 class="text-gray-600 mt-10">Send a Request to the traveler</h3>
         <hr/>
@@ -28,11 +27,11 @@
           <%= f.hidden_field :post_id, value: @post.id %>
           <div>
             <%= f.text_area :description, rows: 7, class: "mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-color focus:ring focus:ring-brand-color focus:ring-opacity-50", required: true %>
-            <%= f.label :description, "Describe what you are sending. Provide sufficient info so the traveler may accept your requests", class: "block  mt-2 text-xs text-danger font-medium text-gray-600" %>
+            <%= f.label :description, "Describe what you are sending. Provide sufficient info so the traveler may accept your requests", class: "block mt-2 text-xs text-danger font-medium text-gray-600" %>
           </div>
           <div class="flex justify-between">
             <%= link_to "Back to Posts", root_path, class: "mt-6 inline-block text-xs text-brand-color hover:underline" %>
-            <%= f.submit "Send Request", class: " cursor-pointer brand-btn-primary text-white text-xs font-medium py-2 px-4 rounded-md hover:bg-opacity-90 transition" %>
+            <%= f.submit "Send Request", class: "cursor-pointer brand-btn-primary text-white text-xs font-medium py-2 px-4 rounded-md hover:bg-opacity-90 transition" %>
           </div>
         <% end %>
       <% elsif @post.post_type == "sender" %>
@@ -43,17 +42,16 @@
             <%= hidden_field_tag "request[status]", "accepted" %>
             <%= submit_tag "Accept Post", class: "brand-btn-primary mt-4 inline-block text-xs" %>
           <% end %>
-
         </div>
       <% end %>
-    <% else %>
-      <p class="text-sm mt-10 p-5 bg-blue-50 text-blue-700">You already <%= @request.accepted? ? 'accepted' : 'sent a request to' %> this post</p>
-      <div class="text-right">
-        <%= link_to "Back to Posts", root_path, class: "mt-6 inline-block self-end text-sm text-brand-color hover:underline" %>
 
-      </div>
+    <% elsif @request.present? && @request.requester_id == current_user.id %>
+      <p class="text-sm mt-10 p-5 bg-blue-50 text-blue-700">
+        You already <%= @post.post_type == "sender" ? "accepted this post" : (@request.accepted? ? "had your request accepted" : "sent a request") %>
+      </p>
     <% end %>
   <% end %>
+
 
 
 </div>

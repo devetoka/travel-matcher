@@ -6,6 +6,9 @@ import {initPostDateToggler, mobileFilter, postCustomDateFilter} from "./posts";
 import {initFileUploadCheck} from "./file";
 import {showModal, hideModal, init} from "./request";
 
+window.showModal = showModal;
+window.hideModal = hideModal;
+
 const initializeScripts = () => {
   initNavbar();
   initFileUploadCheck();

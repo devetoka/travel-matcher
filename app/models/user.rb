@@ -31,6 +31,11 @@ class User < ApplicationRecord
       .includes(:requester, post: :user)
   end
 
+  def preferred_contact
+    preferred_contact_method == 'email' ?  email : phone_number
+  end
+
+  private
 
   def correct_profile_picture_format
     return if profile_picture.blank?  # Allow blank values
