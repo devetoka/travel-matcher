@@ -71,3 +71,5 @@ gem "foreman", "~> 0.88.1"
 gem 'active_storage_validations'
 
 gem 'kaminari'
+gem 'image_processing', '~> 1.2'
+gem 'ruby-vips'

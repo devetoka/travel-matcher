@@ -49,10 +49,7 @@ class PostsController < ApplicationController
   def set_post
     @post = Post.find(params[:id])
   end
-  ''
-  def post_params
-    params.require(:post).permit(:post_type, :origin, :destination, :date_range, :start_date, :end_date, :description)
-  end
+
 
   def check_owner
     @requests = nil
@@ -63,6 +60,10 @@ class PostsController < ApplicationController
       puts "here " + Request.where(post: @post, requester: current_user).first.presence.inspect
       @request = Request.where(post: @post, requester: current_user).first.presence || Request.new
     end
+  end
+
+  def post_params
+    params.require(:post).permit(:post_type, :origin, :destination, :date_range, :start_date, :end_date, :description, images: [])
   end
 
   def request_params

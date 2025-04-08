@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  include ImageValidation
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,:recoverable, :rememberable, :validatable, :confirmable
@@ -38,11 +39,6 @@ class User < ApplicationRecord
   private
 
   def correct_profile_picture_format
-    return if profile_picture.blank?  # Allow blank values
-    allowed_types = ["image/png", "image/jpg", "image/jpeg"]
-
-    unless allowed_types.include?(profile_picture.content_type)
-      errors.add(:profile_picture, "must be a PNG, JPG, or JPEG")
-    end
+    validate_image_attachment(record: self, attribute: :profile_picture, attachment: profile_picture)
   end
 end

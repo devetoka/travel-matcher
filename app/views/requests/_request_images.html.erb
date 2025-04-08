@@ -1,0 +1,15 @@
+<% if form.present? %>
+<div>
+  <%= form.label :images, "Attach Images of what you are sending *", class: "block text-sm font-medium text-gray-700" %>
+  <%= form.file_field :images, multiple: true, required: true, accept: "image/png,image/jpeg,image/gif", class: "mt-1 images block w-full border border-2 border-gray-400 bg-gray-200 text-sm text-gray-500" %>
+  <%= form.label :images, "Upload images that will appeal to the traveller", class: "block text-xs font-medium text-gray-400" %>
+
+  <p class="text-xs text-gray-400 mt-1">PNG, JPEG, GIF up to 5MB</p>
+
+
+
+  <div id="image-previews" class="mt-2 flex flex-wrap gap-2"></div>
+
+  <div id="image-errors" class="text-xs text-red-500 mt-1"></div>
+</div>
+<% end %>

@@ -41,6 +41,6 @@ class RequestsController < ApplicationController
   end
 
   def request_params
-    params.require(:request).permit(:post_id, :description, :status)
+    params.require(:request).permit(:post_id, :description, :status, images: [])
   end
 end

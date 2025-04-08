@@ -23,12 +23,14 @@
       <% if @post.post_type == "traveler" %>
         <h3 class="text-gray-600 mt-10">Send a Request to the traveler</h3>
         <hr/>
-        <%= form_with model: @request, local: true, class: "mt-4 space-y-4" do |f| %>
+        <%= form_with model: @request, local: true, class: "mt-4 space-y-8" do |f| %>
           <%= f.hidden_field :post_id, value: @post.id %>
           <div>
             <%= f.text_area :description, rows: 7, class: "mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-color focus:ring focus:ring-brand-color focus:ring-opacity-50", required: true %>
             <%= f.label :description, "Describe what you are sending. Provide sufficient info so the traveler may accept your requests", class: "block mt-2 text-xs text-danger font-medium text-gray-600" %>
+
           </div>
+          <%= render 'requests/request_images', form: f %>
           <div class="flex justify-between">
             <%= link_to "Back to Posts", root_path, class: "mt-6 inline-block text-xs text-brand-color hover:underline" %>
             <%= f.submit "Send Request", class: "cursor-pointer brand-btn-primary text-white text-xs font-medium py-2 px-4 rounded-md hover:bg-opacity-90 transition" %>
@@ -45,9 +47,13 @@
         </div>
       <% end %>
 
-    <% elsif @request.present? && @request.requester_id == current_user.id %>
+    <% elsif flash[:notice].blank? && @request.present? && @request.requester_id == current_user.id %>
       <p class="text-sm mt-10 p-5 bg-blue-50 text-blue-700">
-        You already <%= @post.post_type == "sender" ? "accepted this post" : (@request.accepted? ? "had your request accepted" : "sent a request") %>
+        You already <%= if @post.post_type == "sender"
+                          "accepted this post"
+                        else
+                          @request.accepted? ? "had your request accepted" : "sent a request"
+                        end %>
       </p>
     <% end %>
   <% end %>
@@ -81,6 +87,8 @@
 
   </div>
 <% end %>
-</div>
 
+
+  <%= render 'shared/image_modal' %>
+</div>
 

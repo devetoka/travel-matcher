@@ -1,6 +1,9 @@
 class Post < ApplicationRecord
+  include ImageValidation
+
   belongs_to :user
   has_many :requests, dependent: :destroy
+  has_many_attached :images
 
   before_save :set_dates_from_range, if: -> { date_range.present? }
   before_save :prevent_duplicate, if: -> { start_date.present? && end_date.present? }
@@ -21,8 +24,11 @@ class Post < ApplicationRecord
             presence: true,  unless: -> { date_range.present?}
   validates :date_range,
             length: { maximum: 50 }, allow_blank: true
+  validates :images, presence: { message: "You must attach an image" }, if: :sender_post?
   validate :end_date_cannot_be_before_start_date
   validate :date_range_format, if: -> { date_range.present? }
+  validate :valid_image_format
+
 
   def formatted_start_date
     start_date.strftime('%B %d, %Y') if start_date.present?
@@ -37,6 +43,16 @@ class Post < ApplicationRecord
       .select("posts.*, COUNT(requests.id) AS requests_count")
       .group("posts.id")
       .order(created_at: :desc)
+  end
+
+  private
+
+  def sender_post?
+    post_type == "sender"
+  end
+
+  def valid_image_format
+    validate_multiple_attachments(record: self, attribute: :images, attachments: images)
   end
 
   private

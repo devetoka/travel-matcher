@@ -38,14 +38,16 @@
                         root_path,
                         class: "rounded-md px-3 py-2 text-sm font-medium text-white #{'bg-gray-900' if current_page?(root_path)}" %>
 
-            <%= link_to 'My Posts',
-                        posts_user_path(current_user.username),
-                        class: "rounded-md px-3 py-2 text-sm font-medium text-white #{'bg-gray-900' if current_page?(posts_user_path(current_user.username))}" %>
+            <% if current_user %>
 
-            <%= link_to 'Requests',
-                        requests_user_path(current_user.username),
-                        class: "rounded-md px-3 py-2 text-sm font-medium text-white #{'bg-gray-900' if current_page?(requests_user_path(current_user.username))}" %>
+              <%= link_to 'My Posts',
+                          posts_user_path(current_user.username),
+                          class: "rounded-md px-3 py-2 text-sm font-medium text-white #{'bg-gray-900' if current_page?(posts_user_path(current_user.username))}" %>
 
+              <%= link_to 'Requests',
+                          requests_user_path(current_user.username),
+                          class: "rounded-md px-3 py-2 text-sm font-medium text-white #{'bg-gray-900' if current_page?(requests_user_path(current_user.username))}" %>
+            <% end %>
           </div>
         </div>
       </div>
@@ -142,14 +144,17 @@
                   root_path,
                   class: "rounded-md px-3 py-2 text-sm font-medium text-white #{'bg-gray-900' if current_page?(root_path)}" %>
 
-      <%= link_to 'My Posts',
-                  posts_user_path(current_user.username),
-                  class: "rounded-md px-3 py-2 text-sm font-medium text-white #{'bg-gray-900' if current_page?(posts_user_path(current_user.username))}" %>
+      <% if current_user %>
 
-      <%= link_to 'Requests',
-                  requests_user_path(current_user.username),
-                  class: "rounded-md px-3 py-2 text-sm font-medium text-white #{'bg-gray-900' if current_page?(requests_user_path(current_user.username))}" %>
+        <%= link_to 'My Posts',
+                    posts_user_path(current_user.username),
+                    class: "rounded-md px-3 py-2 text-sm font-medium text-white #{'bg-gray-900' if current_page?(posts_user_path(current_user.username))}" %>
 
+        <%= link_to 'Requests',
+                    requests_user_path(current_user.username),
+                    class: "rounded-md px-3 py-2 text-sm font-medium text-white #{'bg-gray-900' if current_page?(requests_user_path(current_user.username))}" %>
+
+      <% end %>
 
     </div>
   </div>

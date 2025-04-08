@@ -1,6 +1,9 @@
 class Request < ApplicationRecord
+  include ImageValidation
   belongs_to :post
   belongs_to :requester, class_name: "User"
+
+  has_many_attached :images
 
 
   validates :status, inclusion: { in: %w[pending accepted rejected] }
@@ -8,6 +11,7 @@ class Request < ApplicationRecord
   validate :requester_not_post_owner
   validate :sender_cannot_accept_request
   validate :prevent_duplicate_request
+  validate :check_images
 
   enum status: { pending: "pending", accepted: "accepted", rejected: "rejected" }
   enum milestone: { pending_handover: "pending_handover", handed_over: "handed_over", delivered: "delivered" }
@@ -29,6 +33,10 @@ class Request < ApplicationRecord
   end
 
   private
+
+  def check_images
+    validate_multiple_attachments(record: self, attribute: :images, attachments: images)
+  end
 
   def prevent_duplicate_request
     errors.add(:base, 'You already requested/accepted this post') unless Request.where(post: post, requester: requester).where.not(id: id).blank?

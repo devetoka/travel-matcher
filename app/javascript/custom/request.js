@@ -20,7 +20,18 @@ const showModal = (element = null) => {
 
 function hideModal() {
     const modal = document.getElementById('request-modal');
-    modal.classList?.add('hidden');
+    modal?.classList?.add('hidden');
+}
+
+function showImageModal(imageUrl) {
+    console.log('image')
+    const modal = document.getElementById('image-modal');
+    document.getElementById('full-image').src = imageUrl;
+    modal.classList.remove('hidden');
+}
+
+function hideImageModal() {
+    document.getElementById('image-modal').classList.add('hidden');
 }
 
 function init() {
@@ -42,5 +53,7 @@ String.prototype.capitalize = function() {
 export {
     showModal,
     hideModal,
-    init
+    init,
+    showImageModal,
+    hideImageModal
 }
