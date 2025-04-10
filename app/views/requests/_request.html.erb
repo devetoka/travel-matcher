@@ -1,4 +1,4 @@
-<div class="bg-white shadow-md rounded-xl p-6 hover:shadow-lg transition-all duration-300 border border-gray-100"
+<div class="bg-white shadow-md  p-6 hover:shadow-lg transition-all duration-300 border border-gray-100"
      data-request-id="<%= request.id %>"
      data-post-type="<%= request.post.post_type %>"
      data-post-origin="<%= request.post.origin %>"
@@ -25,7 +25,7 @@
       </div>
 
       <% if request.description.present? %>
-        <p class="text-sm text-gray-600 mt-2 italic bg-gray-50 p-2 rounded-md">"<%= request.description.truncate(50) %>"</p>
+        <p class="text-sm text-gray-600 mt-2 italic bg-gray-50 p-2 ">"<%= request.description.truncate(50) %>"</p>
       <% end %>
       <div class="flex items-center space-x-4 mt-2 text-sm">
         <p class="text-gray-500">

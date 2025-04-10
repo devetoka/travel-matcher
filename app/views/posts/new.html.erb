@@ -1,5 +1,6 @@
-<div class="max-w-3xl mx-auto bg-white shadow-2xl p-8 rounded-lg transform transition-all hover:shadow-xl">
-  <h2 class="text-lg font-extrabold text-brand-color mb-6">Create a New Post</h2>
+<div class="container mx-auto px-4 py-16 max-w-6xl">
+  <div class="bg-gradient-to-br from-gray-50 to-white shadow-lg p-8 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
+    <h1 class="text-3xl font-extrabold text-brand-color mb-8 text-center tracking-tight">Create Post</h1>
 
   <%= form_with(model: @post, local: true, class: "space-y-4", html: { class: 'space-y-8 form-handler'}) do |f| %>
     <%= render "shared/error_messages", resource: @post %>
@@ -73,7 +74,7 @@
 
     <div class="actions">
       <%= f.submit "Create Post",
-                   class: "w-full submit-handler bg-brand-color text-white py-2 px-4 rounded-lg hover:bg-brand-color transition duration-300",
+                   class: "w-full submit-handler bg-brand-color text-white py-2 px-4 hover:bg-brand-color transition duration-300",
           data: { disable_with: "Creating..." }
       %>
     </div>
@@ -82,4 +83,5 @@
   <div class="mt-4 text-center text-xs text-gray-600">
     <%= link_to "Back", posts_path, class: "text-brand-color hover:text-brand-color" %>
   </div>
+</div>
 </div>

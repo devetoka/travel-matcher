@@ -1,7 +1,10 @@
-<div class="max-w-3xl mx-auto bg-white shadow-2xl p-8 rounded-lg transform transition-all hover:shadow-xl">
-  <h2 class="text-lg font-extrabold text-brand-color mb-6">Edit Post</h2>
-  <%= render 'form' %>
-  <div class="mt-4 text-center text-xs text-gray-600">
-    <%= link_to "My Posts", posts_user_path(username: current_user.username), class: "text-brand-color hover:text-brand-color" %>
+<div class="container mx-auto px-4 py-16 max-w-6xl">
+  <div class="bg-gradient-to-br from-gray-50 to-white shadow-lg p-8 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
+    <h1 class="text-3xl font-extrabold text-brand-color mb-8 text-center tracking-tight">Edit Post</h1>
+    <%= render 'form' %>
+    <div class="mt-4 text-center text-xs text-gray-600">
+      <%= link_to "My Posts", posts_user_path(username: current_user.username), class: "text-brand-color hover:text-brand-color" %>
+    </div>
   </div>
 </div>
+

@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:show]
   before_action :set_user
-  before_action :authorize_user, except: %i[show]
+  before_action :authorize_user, except: [:show]
 
 
   def show
@@ -9,6 +9,14 @@ class UsersController < ApplicationController
       flash[:alert] = "User not found."
       redirect_to root_path
     end
+
+    @posts = @user.posts.order(created_at: :desc).limit(5) # Latest 5 posts
+    @requests = @user.requests.order(created_at: :desc).limit(5) # Latest 5 requests
+    @reviews = @user.received_reviews.order(created_at: :desc).page(params[:page])
+    @average_rating = @user.received_reviews.average(:rating).to_f.round(1)
+  end
+
+  def edit
   end
 
 

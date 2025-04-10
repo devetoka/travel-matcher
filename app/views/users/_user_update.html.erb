@@ -8,23 +8,23 @@
       <!-- First Name -->
       <div class="field">
         <label class="text-sm font-medium text-gray-600">First Name *</label>
-        <%= f.text_field :first_name, required: true, autocomplete: "given-name", class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+        <%= f.text_field :first_name, required: true, autocomplete: "given-name", class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300  p-2" %>
       </div>
       <!-- Email -->
       <div class="field">
         <label class="text-sm font-medium text-gray-600">Email</label>
-        <%= f.email_field :email, autocomplete: "email", disabled: true,  class: " bg-gray-300 mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+        <%= f.email_field :email, autocomplete: "email", disabled: true,  class: " bg-gray-300 mt-1 block w-full text-sm text-gray-600 border border-gray-300  p-2" %>
       </div>
       <!-- Profile Picture -->
       <div class="field">
         <label class="text-sm font-medium text-gray-600">Update Profile Picture</label>
-        <%= f.file_field :profile_picture, accept: "image/png,image/jpg,image/jpeg", class: "mt-1 valid-image block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+        <%= f.file_field :profile_picture, accept: "image/png,image/jpg,image/jpeg", class: "mt-1 valid-image block w-full text-sm text-gray-600 border border-gray-300  p-2" %>
       </div>
 
       <!-- Location -->
       <div class="field">
         <label class="text-sm font-medium text-gray-600">Your Location</label>
-        <%= f.text_field :location, autocomplete: "address-level2", placeholder: "e.g., Berlin, Germany", class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+        <%= f.text_field :location, autocomplete: "address-level2", placeholder: "e.g., Berlin, Germany", class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300  p-2" %>
       </div>
 
     </div>
@@ -34,7 +34,7 @@
       <!-- Last Name -->
       <div class="field">
         <label class="text-sm font-medium text-gray-600">Last Name *</label>
-        <%= f.text_field :last_name, required: true, autocomplete: "family-name", class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+        <%= f.text_field :last_name, required: true, autocomplete: "family-name", class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300  p-2" %>
       </div>
       <!-- Username -->
       <div class="field">
@@ -47,13 +47,13 @@
       <!-- Phone Number -->
       <div class="field">
         <label class="text-sm font-medium text-gray-600">Phone Number</label>
-        <%= f.text_field :phone_number, autocomplete: "tel", class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+        <%= f.text_field :phone_number, autocomplete: "tel", class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300  p-2" %>
       </div>
 
       <!-- Preferred Contact -->
       <div class="field">
         <label class="text-sm font-medium text-gray-600">Preferred Contact</label>
-        <%= f.select :preferred_contact_method, options_for_select([["Email", "email"], ["Phone", "phone"], ["App Messaging", "app"]], @user.preferred_contact_method || "email"), {}, class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2" %>
+        <%= f.select :preferred_contact_method, options_for_select([["Email", "email"], ["Phone", "phone"], ["App Messaging", "app"]], @user.preferred_contact_method || "email"), {}, class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300  p-2" %>
       </div>
 
 
@@ -63,7 +63,7 @@
   <!-- Bio (Full Width) -->
   <div class="field mt-4">
     <label class="text-sm font-medium text-gray-600">Bio</label>
-    <%= f.text_area :bio, class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300 rounded-lg p-2", rows: 4 %>
+    <%= f.text_area :bio, class: "mt-1 block w-full text-sm text-gray-600 border border-gray-300  p-2", rows: 4 %>
   </div>
 
   <!-- Submit Button -->

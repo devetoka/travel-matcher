@@ -1,10 +1,162 @@
-<div class="  mt-4 md:flex justify-space-around space-y-8">
-  <div class="lg:max-w-sm md:max-h-96 bg-white   p-8 transform transition-all hover:shadow-xl">
-    <%= render 'users/user_profile_card'  %>
+<div class="container mx-auto px-4 py-16 max-w-6xl">
+  <!-- Profile Header -->
+  <%= render 'user_profile_card' %>
+  <!-- Tabs for Posts, Requests, Reviews -->
+  <div class="mt-8">
+    <div class="flex border-b border-gray-200">
+      <button class="tab-btn flex-1 py-3 px-4 text-center text-sm font-semibold text-gray-600 hover:text-brand-color border-b-2 border-transparent hover:border-brand-color transition-all duration-200 active" data-tab="posts">Posts</button>
+      <button class="tab-btn flex-1 py-3 px-4 text-center text-sm font-semibold text-gray-600 hover:text-brand-color border-b-2 border-transparent hover:border-brand-color transition-all duration-200" data-tab="requests">Requests</button>
+      <button class="tab-btn flex-1 py-3 px-4 text-center text-sm font-semibold text-gray-600 hover:text-brand-color border-b-2 border-transparent hover:border-brand-color transition-all duration-200" data-tab="reviews">Reviews</button>
+    </div>
+
+    <!-- Posts Tab -->
+    <div id="posts" class="tab-content mt-6 hidden">
+      <h2 class="text-2xl font-bold text-brand-color mb-6">Recent Posts</h2>
+      <% if @posts.any? %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <% @posts.each do |post| %>
+            <div class="bg-white shadow-lg p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+              <div class="flex items-center space-x-3">
+                <% if post.images.attached? %>
+                  <%= image_tag post.images.first.variant(resize_to_limit: [50, 50]), class: "h-12 w-12 object-cover" %>
+                <% else %>
+                  <div class="h-12 w-12 bg-gray-200 flex items-center justify-center text-gray-500">?</div>
+                <% end %>
+                <div>
+                  <p class="text-lg font-semibold text-gray-900">
+                    <%= link_to "#{post.origin} → #{post.destination}", post_path(post), class: "text-brand-color hover:text-blue-700 transition-colors duration-200" %>
+                  </p>
+                  <p class="text-sm text-gray-600"><%= post.post_type.capitalize %></p>
+                </div>
+              </div>
+              <p class="text-sm text-gray-500 mt-2"><%= time_ago_in_words(post.created_at) %> ago</p>
+            </div>
+          <% end %>
+        </div>
+        <%= link_to "See All Posts", posts_path(user_id: @user.id), class: "block mt-4 text-sm text-brand-color font-semibold hover:text-blue-700 transition-colors duration-200" %>
+      <% else %>
+        <p class="text-gray-500 italic">No posts yet.</p>
+      <% end %>
+    </div>
+
+    <!-- Requests Tab -->
+    <div id="requests" class="tab-content mt-6 hidden">
+      <h2 class="text-2xl font-bold text-brand-color mb-6">Recent Requests</h2>
+      <% if @requests.any? %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <% @requests.each do |request| %>
+            <div class="bg-white shadow-lg p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+              <div class="flex items-center space-x-3">
+                <% if request.images.attached? %>
+                  <%= image_tag request.images.first.variant(resize_to_limit: [50, 50]), class: "h-12 w-12 object-cover" %>
+                <% else %>
+                  <div class="h-12 w-12 bg-gray-200 flex items-center justify-center text-gray-500">?</div>
+                <% end %>
+                <div>
+                  <p class="text-lg font-semibold text-gray-900">
+                    <%= link_to "#{request.post.origin} → #{request.post.destination}", request_path(request), class: "text-brand-color hover:text-blue-700 transition-colors duration-200" %>
+                  </p>
+                  <p class="text-sm text-gray-600"><%= request.status.capitalize %> • <%= request.milestone.to_s.humanize %></p>
+                </div>
+              </div>
+              <p class="text-sm text-gray-500 mt-2"><%= time_ago_in_words(request.created_at) %> ago</p>
+            </div>
+          <% end %>
+        </div>
+        <%= link_to "See All Requests", requests_user_path(@user.username), class: "block mt-4 text-sm text-brand-color font-semibold hover:text-blue-700 transition-colors duration-200" %>
+      <% else %>
+        <p class="text-gray-500 italic">No requests yet.</p>
+      <% end %>
+    </div>
+
+    <!-- Reviews Tab -->
+    <div id="reviews" class="tab-content mt-6 hidden">
+      <h2 class="text-2xl font-bold text-brand-color mb-6">Community Reviews</h2>
+      <% if @reviews.any? %>
+        <div class="space-y-6">
+          <% @reviews.each do |review| %>
+            <div class="bg-white shadow-lg p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+              <div class="flex items-center space-x-3">
+                <div class="h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-semibold text-lg">
+                  <%= review.reviewer.username[0].upcase %>
+                </div>
+                <div>
+                  <p class="text-lg font-semibold text-gray-900">
+                    <%= link_to "@#{review.reviewer.username}", user_path(review.reviewer.username), class: "text-brand-color hover:text-blue-700 transition-colors duration-200" %>
+                  </p>
+                  <div class="flex space-x-1">
+                    <div class="flex items-center mt-3">
+                      <% rating = review.rating.to_f.round(1) %>
+                      <% remainder_rating = 5.0 - rating %>
+                      <% rating.floor.times do %>
+                        <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.39 2.46a1 1 0 00-.363 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.39-2.46a1 1 0 00-1.175 0l-3.39 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.363-1.118l-3.39-2.46c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z"></path></svg>
+                      <% end %>
+                      <% remainder_rating.floor.times do %>
+                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.39 2.46a1 1 0 00-.363 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.39-2.46a1 1 0 00-1.175 0l-3.39 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.363-1.118l-3.39-2.46c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z"></path></svg>
+                      <% end %>
+                      <span class="ml-2 text-sm text-gray-600"><%= rating %></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% if review.comment.present? %>
+                <p class="text-sm text-gray-600 italic mt-3">"<%= review.comment %>"</p>
+              <% end %>
+              <p class="text-xs text-gray-500 mt-2">Posted <%= time_ago_in_words(review.created_at) %> ago</p>
+            </div>
+          <% end %>
+
+          <%= render 'shared/pagination', resource: @reviews %>
+        </div>
+      <% else %>
+        <p class="text-gray-500 italic">No reviews yet.</p>
+      <% end %>
+    </div>
   </div>
-  <% if current_user.id == @user.id %>
-  <div class="bg-white md:ml-2  p-8 flex-1 hover:shadow-xl">
-    <%= render 'users/user_update'  %>
-  </div>
-  <% end %>
 </div>
+
+<script>
+    document.querySelectorAll('.tab-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // Toggle active tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-brand-color', 'border-brand-color');
+                btn.classList.add('text-gray-600', 'border-transparent');
+            });
+            this.classList.add('text-brand-color', 'border-brand-color');
+            this.classList.remove('text-gray-600', 'border-transparent');
+
+            // Toggle tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            document.getElementById(this.dataset.tab).classList.remove('hidden');
+        });
+    });
+
+    document.querySelector('[data-tab="posts"]').click();
+
+    urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('page')) {
+        document.querySelector('[data-tab="reviews"]').click();
+    }
+</script>
+
+<style>
+    .text-brand-color {
+        color: #2563eb;
+    }
+    .bg-brand-color {
+        background-color: #2563eb;
+    }
+    .border-brand-color {
+        border-color: #2563eb;
+    }
+    .hover\:text-brand-color:hover {
+        color: #2563eb;
+    }
+    .hover\:bg-brand-color:hover {
+        background-color: #2563eb;
+    }
+    .focus\:ring-brand-color:focus {
+        --tw-ring-color: #2563eb;
+    }
+</style>

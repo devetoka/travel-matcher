@@ -1,5 +1,8 @@
-<div class="max-w-3xl mx-auto border-gray-300 border-solid border-2 bg-white shadow-2xl p-8 rounded-lg transform transition-all hover:shadow-xl">
-
+<div class="container mx-auto px-4 py-16 max-w-6xl">
+  <div class="bg-gradient-to-br from-gray-50 to-white shadow-lg p-8 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
+    <h1 class="text-3xl font-extrabold text-brand-color mb-8 tracking-tight">
+      <%= "#{@post.origin} → #{@post.destination}" %>
+    </h1>
   <%= render "shared/flash" %>
   <h2 class="text-lg font-extrabold text-brand-color mb-6"><%= @post.post_type.capitalize %> Post</h2>
 
@@ -26,14 +29,14 @@
         <%= form_with model: @request, local: true, class: "mt-4 space-y-8" do |f| %>
           <%= f.hidden_field :post_id, value: @post.id %>
           <div>
-            <%= f.text_area :description, rows: 7, class: "mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-color focus:ring focus:ring-brand-color focus:ring-opacity-50", required: true %>
+            <%= f.text_area :description, rows: 7, class: "mt-1 p-3 block w-full  border-gray-300 shadow-sm focus:border-brand-color focus:ring focus:ring-brand-color focus:ring-opacity-50", required: true %>
             <%= f.label :description, "Describe what you are sending. Provide sufficient info so the traveler may accept your requests", class: "block mt-2 text-xs text-danger font-medium text-gray-600" %>
 
           </div>
           <%= render 'requests/request_images', form: f %>
           <div class="flex justify-between">
             <%= link_to "Back to Posts", root_path, class: "mt-6 inline-block text-xs text-brand-color hover:underline" %>
-            <%= f.submit "Send Request", class: "cursor-pointer brand-btn-primary text-white text-xs font-medium py-2 px-4 rounded-md hover:bg-opacity-90 transition" %>
+            <%= f.submit "Send Request", class: "cursor-pointer brand-btn-primary text-white text-xs font-medium py-2 px-4  hover:bg-opacity-90 transition" %>
           </div>
         <% end %>
       <% elsif @post.post_type == "sender" %>
@@ -58,7 +61,7 @@
     <% end %>
   <% end %>
 
-
+  </div>
 
 </div>
 

@@ -34,7 +34,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
                     return render 'users/change_password', status: :unprocessable_entity
                 else
                     @user.reload
-                    return render 'users/show', status: :unprocessable_entity
+                    return render 'users/edit', status: :unprocessable_entity
                 end
             else
                 if params[:update_type] == 'password'
@@ -49,10 +49,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
 
     def after_update_path_for(resource)
-        unless params[:update_type].present? && params[:update_type] == 'password'
-            user_path(resource)
-        else
+        if params[:update_type].present? && params[:update_type] == 'password'
             change_password_path(resource)
+        else
+            user_path(resource.username)
         end
     end
 

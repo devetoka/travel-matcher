@@ -1,31 +1,64 @@
-<!-- Profile Header -->
-<div class="flex items-center space-x-6">
-  <% if @user.profile_picture.present? %>
-    <%= image_tag @user.profile_picture, class: "w-24 h-24 rounded-full object-cover border-4 border-primary" %>
-  <% else %>
-    <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-2xl font-bold text-brand-color">
-      <%= @user.first_name[0] %><%= @user.last_name[0] %>
+<div class="bg-gradient-to-br from-gray-50 to-white shadow-lg p-8 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
+  <div class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
+    <div class="h-24 w-24 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-semibold text-4xl shadow-md">
+      <% if  @user.profile_picture.present? %>
+        <%= image_tag @user.profile_picture, class: "h-24 w-24 rounded-full object-cover border-4 border-primary" %>
+      <% else %>
+        <%= @user.first_name[0].upcase %> <%= @user.last_name[0] %>
+      <% end %>
     </div>
-  <% end %>
-  <div>
-    <h1 class="text-lg font-extrabold text-brand-color"><%= @user.full_name %></h1>
-    <p class="text-sm">Username: @<%= @user.username %></p>
-    <p class="text-gray-600 text-xs"><%= @user.location.presence || "Location not set" %></p>
+
+    <div class="text-center md:text-left flex-1">
+      <div class="flex justify-between items-start">
+        <div>
+          <h1 class="text-3xl font-extrabold text-brand-color tracking-tight"><%= @user.full_name %></h1>
+          <div class="flex space-x-3 mt-1">
+            <p class="text-xs text-gray-400 ">@<%= @user.username %></p>
+            <% if user_signed_in? && current_user == @user %>
+              <p class="text-xs text-gray-400 ">✉️ <%= @user.email %></p>
+              <p class="text-xs text-gray-400 ">📱 <%= @user.phone_number %></p>
+              <% if @user.location.present? %>
+                <p class="text-xs text-gray-400 ">🏠 <%= @user.location %></p>
+              <% end %>
+            <% end %>
+          </div>
+
+        </div>
+        <% if user_signed_in? && current_user == @user %>
+          <%= link_to "Edit Profile", edit_user_path(@user.username), class: "text-xs text-brand-color font-semibold hover:text-blue-700 transition-colors duration-200 underline" %>
+        <% end %>
+      </div>
+      <p class="text-sm text-gray-500 italic mt-2">Joined <%= @user.created_at.strftime("%b %Y") %></p>
+      <% if @user.bio.present? %>
+        <p class="text-sm text-gray-400 mt-3 italic max-w-md leading-relaxed"><%= @user.bio %></p>
+      <% else %>
+        <p class="text-sm text-gray-400 italic mt-3">No bio yet.</p>
+      <% end %>
+      <% if @reviews.present? && @reviews.any? %>
+        <div class="flex items-center mt-3">
+          <% average_rating = @average_rating %>
+          <% remainder_rating = 5.0 - average_rating %>
+          <% average_rating.floor.times do %>
+            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.39 2.46a1 1 0 00-.363 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.39-2.46a1 1 0 00-1.175 0l-3.39 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.363-1.118l-3.39-2.46c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z"></path></svg>
+          <% end %>
+          <% if average_rating % 1 >= 0.5 %>
+            <div class="relative w-5 h-5">
+              <svg class="absolute top-0 left-0 w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.39 2.46a1 1 0 00-.363 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.39-2.46a1 1 0 00-1.175 0l-3.39 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.363-1.118l-3.39-2.46c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />
+              </svg>
+
+              <div class="absolute top-0 left-0 w-1/2 h-full">
+                <svg class="w-5 h-5 text-yellow-400 transform -scale-x-100" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.39 2.46a1 1 0 00-.363 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.39-2.46a1 1 0 00-.588-.588V2.927z"></path></svg>
+              </div>
+            </div>
+
+          <% end %>
+          <% remainder_rating.floor.times do %>
+            <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.39 2.46a1 1 0 00-.363 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.39-2.46a1 1 0 00-1.175 0l-3.39 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.363-1.118l-3.39-2.46c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z"></path></svg>
+          <% end %>
+          <span class="ml-2 text-sm text-gray-600"><%= average_rating %> (<%= pluralize(@reviews.total_count, "review") %>)</span>
+        </div>
+      <% end %>
+    </div>
   </div>
-</div>
-
-<!-- Bio -->
-<div class="mt-8">
-  <h4 class="text-md font-bold text-brand-color">About Me</h4>
-  <p class="text-gray-600 text-sm mt-2"><%= @user.bio || "No bio yet." %></p>
-</div>
-
-<!-- Contact Info -->
-<div class="mt-8">
-  <h2 class="text-md font-bold text-brand-color">Contact</h2>
-  <p class="text-gray-600 text-sm mt-2">Email: <%= @user.email %></p>
-  <% if @user.phone_number.present? %>
-    <p class="text-gray-600 text-sm">Phone: <%= @user.phone_number %></p>
-  <% end %>
-  <p class="text-gray-600 text-sm">Preferred Contact: <%= @user.preferred_contact_method || "Not specified" %></p>
 </div>

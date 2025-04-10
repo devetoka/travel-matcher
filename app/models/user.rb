@@ -13,7 +13,7 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true, length: { minimum: 4, maximum: 20}
   validates :first_name, :last_name, presence: true, length: { minimum: 3, maximum: 20 }
   validates :location, length: { minimum: 3, maximum: 100 }, allow_blank: true
-  validates :phone_number, length: { minimum: 5, maximum: 20 }, allow_blank: true
+  validates :phone_number, length: { minimum: 5, maximum: 20 }, format: { with: /\A\+?\d+\z/, message: "must contain only digits (optionally starting with +)" }, allow_blank: true
   validates :preferred_contact_method, inclusion: { in: %w[email phone app] }, allow_blank: true
   validates :bio, length: { maximum: 300 }, allow_blank: true
   validate :correct_profile_picture_format

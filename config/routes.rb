@@ -16,12 +16,12 @@ Rails.application.routes.draw do
   get 'login', to: 'devise/sessions#new', as: :login
   delete 'logout', to: 'devise/sessions#destroy', as: :logout
   get 'register', to: 'devise/registrations#new', as: :register
-  get 'users/:username/update', to: 'devise/registrations#edit', as: :edit_user
+  get 'users/:username/update', to: 'devise/registrations#edit'
   get 'users/:username/change-password', to: 'users#change_password', as: :change_password
 
 
 
-  resources :users, only: [:show], path: 'users', param: :username do
+  resources :users, only: [:show, :edit], path: 'users', param: :username do
     member do
       get 'posts', to: 'users#posts', as: :posts
       get 'requests', to: 'users#requests', as: :requests
