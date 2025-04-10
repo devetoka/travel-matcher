@@ -7,7 +7,9 @@
   <% if @requests.any? %>
     <div class="space-y-6">
       <% @requests.each_with_index do |request, index| %>
-        <%= render 'requests/request', {request: request, post: nil} %>
+        <%= link_to request_path(request), class: "block" do %>
+          <%= render 'requests/request', {request: request, post: nil} %>
+        <% end %>
       <% end %>
     </div>
 

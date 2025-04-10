@@ -1,0 +1,205 @@
+<div class="container mx-auto px-4 py-16 max-w-6xl">
+  <h1 class="text-4xl font-extrabold text-brand-color mb-12 text-center tracking-tight transition-all duration-300 hover:text-blue-700">Request Overview</h1>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Left: Images (Improved Product Detail Style) -->
+    <div class="lg:col-span-2 bg-gradient-to-br from-gray-50 to-white shadow-lg p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
+      <h2 class="text-2xl font-bold text-brand-color mb-6">Parcel Showcase</h2>
+      <% if @request.images.attached? %>
+        <div class="space-y-6">
+          <!-- Main Image -->
+          <div class="relative group overflow-hidden border border-gray-200">
+            <img id="main-image" src="<%= url_for(@request.images.first) %>" alt="Main parcel image" class="w-full h-[450px] object-contain transition-transform duration-500 group-hover:scale-105 bg-white">
+<!--            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300"></div>-->
+          </div>
+          <!-- Thumbnails -->
+          <div class="flex flex-wrap justify-center gap-3 py-2">
+            <% @request.images.each_with_index do |image, index| %>
+              <%= image_tag image.variant(resize_to_limit: [100, 100]), class: "h-24 w-24 object-cover cursor-pointer border-1 #{index == 0 ? 'border-brand-color active-thumbnail' : 'border-gray-400'} hover:border-blue-600 transition-all duration-200 thumbnail", data: { url: url_for(image) } %>
+            <% end %>
+          </div>
+        </div>
+      <% else %>
+        <div class="flex items-center justify-center h-64 bg-gray-100">
+          <p class="text-gray-400 text-lg font-medium italic">No images available</p>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Right: Request Details -->
+    <div class="bg-white shadow-lg p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
+      <h2 class="text-2xl font-bold text-brand-color mb-6">Request Snapshot</h2>
+      <div class="space-y-4 text-gray-700">
+        <p class="text-sm flex items-center">
+          <span class="font-semibold text-gray-900 mr-2">Post:</span>
+          <%= link_to "#{@request.post.origin} → #{@request.post.destination}", post_path(@request.post), class: "text-brand-color hover:text-blue-700 font-medium transition-colors duration-200" %>
+          <span class="ml-2 text-xs text-gray-500">(<%= @request.post.post_type.capitalize %>)</span>
+        </p>
+        <p class="text-sm flex items-center">
+          <span class="font-semibold text-gray-900 mr-2">Status:</span>
+          <span class="inline-flex items-center px-3 py-1 text-xs font-medium <%= @request.status == 'accepted' ? 'bg-green-100 text-green-700' : @request.status == 'rejected' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700' %> shadow-sm">
+            <%= @request.status.capitalize %>
+          </span>
+        </p>
+        <p class="text-sm">
+          <span class="font-semibold text-gray-900">Progress:</span>
+          <span class="text-gray-600"><%= @request.milestone.to_s.humanize.presence || "Not set" %></span>
+        </p>
+        <% if @request.description.present? %>
+          <p class="text-sm bg-gray-50 p-3 shadow-inner">
+            <span class="font-semibold text-gray-900 block mb-1">Message:</span>
+            <span class="text-gray-600 italic"><%= @request.description %></span>
+          </p>
+        <% end %>
+        <p class="text-sm text-gray-500">
+          <span class="font-semibold text-gray-900">Sent:</span> <%= @request.created_at.strftime("%b %d, %Y") %>
+        </p>
+      </div>
+
+      <!-- Accept/Reject Buttons (Traveler Only) -->
+      <% if @request.post.user == current_user && @request.pending? %>
+        <div class="text-right space-x-2">
+          <%= link_to "Accept", accept_request_path(@request), data: {turbo_method: 'post', turbo_confirm: "Are you sure you want to accept '#{@request.description}'?"}, class: "bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium hover:bg-green-600 transition-colors duration-200" %>
+          <%= link_to "Reject", reject_request_path(@request), data: {turbo_method: 'post', turbo_confirm: "Are you sure you want to reject '#{@request.description}'?"}, class: "bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium hover:bg-red-600 transition-colors duration-200" %>
+        </div>
+      <% end %>
+
+      <!-- Milestone Update -->
+      <%  if @request.pending_handover? %>
+        <div class="mt-6">
+          <h3 class="text-lg font-semibold text-brand-color mb-3">Set Milestone</h3>
+          <%= form_with model: @request, url: request_path(@request), method: :patch, local: true, class: "flex items-center space-x-3" do |form| %>
+            <%= form.select :milestone, options_for_select([["Pending Handover", "pending_handover"], ["Handed Over", "handed_over"], ["Delivered", "delivered"]], @request.milestone), { include_blank: "Update Progress" }, class: "flex-1 appearance-none bg-white border border-gray-300 py-2 px-4 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-color shadow-sm transition-all duration-200" %>
+            <%= form.submit "Save", class: "bg-brand-color text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 shadow-md" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Other Party Profile -->
+  <div class="mt-8 bg-gradient-to-br from-gray-50 to-white shadow-lg p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
+    <h2 class="text-2xl font-bold text-brand-color mb-6">
+      <%= @request.requester == current_user ? "Traveler" : "Sender" %> Spotlight
+    </h2>
+    <% other_party = @request.requester == current_user ? @request.post.user : @request.requester %>
+    <div class="space-y-4 text-gray-700">
+      <div class="flex items-center space-x-3">
+        <div class="h-12 w-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-semibold text-xl">
+          <%= other_party.username[0].upcase %>
+        </div>
+        <div>
+          <p class="text-lg font-semibold text-gray-900">
+            <%= link_to "@#{other_party.username}", user_path(other_party.username), class: "text-brand-color hover:text-blue-700 transition-colors duration-200" %>
+          </p>
+          <p class="text-sm text-gray-600"><%= other_party.full_name %></p>
+        </div>
+      </div>
+      <% if @request.accepted? %>
+        <p class="text-sm flex items-center space-x-3">
+          <span class="font-semibold text-gray-900 mr-2">Contact:</span>
+          ✉️: <a href="mailto:<%= other_party.email %>" class="ml-2 text-brand-color hover:text-blue-700 transition-colors duration-200"><%= other_party.email %></a>
+          📱: <a href="tel:<%= other_party.phone_number %>" class="ml-2 text-brand-color hover:text-blue-700 transition-colors duration-200"><%= other_party.phone_number %></a>
+        </p>
+        <% else %>
+        <p class="bg-gray-100 p-3 shadow-inner text-sm text-gray-500 italic">
+          <span class=" mr-2">Contact:</span>
+          You can only contact the user if the request is accepted
+        </p>
+      <% end %>
+      <div class="bg-gray-100 p-3 shadow-inner">
+        <p class="text-sm text-gray-500 italic">Joined <%= other_party.created_at.strftime("%b %Y") %> • More details coming soon...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div class="mt-8 bg-white shadow-lg p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
+    <h2 class="text-2xl font-bold text-brand-color mb-6">Community Feedback</h2>
+    <div class="space-y-6">
+      <% if @request.accepted? %>
+        <!-- Review Form with Stars -->
+        <%= form_with url: "#", local: true, class: "space-y-5 bg-gray-50 p-4 shadow-inner transition-all duration-200 hover:shadow-md" do |form| %>
+          <div>
+            <%= form.label :rating, "Rate Your Experience", class: "block text-sm font-semibold text-gray-800 mb-2" %>
+            <div class="flex space-x-1" id="star-rating">
+              <%= form.hidden_field :rating, value: "", id: "rating-value" %>
+              <% 5.times do |i| %>
+                <svg class="w-6 h-6 cursor-pointer text-gray-300 hover:text-yellow-400 transition-colors duration-200 star" data-value="<%= i + 1 %>" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.39 2.46a1 1 0 00-.363 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.39-2.46a1 1 0 00-1.175 0l-3.39 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.363-1.118l-3.39-2.46c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z"></path>
+                </svg>
+              <% end %>
+            </div>
+          </div>
+          <div>
+            <%= form.label :comment, "Your Thoughts", class: "block text-sm font-semibold text-gray-800 mb-2" %>
+            <%= form.text_area :comment, rows: 4, class: "w-full border border-gray-300 p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-color transition-all duration-200 resize-none" %>
+          </div>
+          <%= form.submit "Share Review", class: "w-full bg-brand-color text-white py-2 px-4 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 shadow-md" %>
+        <% end %>
+      <% else %>
+        <p class="text-sm text-gray-500 italic bg-gray-50 p-3 shadow-inner">Reviews unlock once the request is accepted.</p>
+      <% end %>
+      <!-- Placeholder for Reviews -->
+      <div class="text-sm text-gray-500 bg-gray-50 p-3 shadow-inner italic">No reviews yet—be the first to share your experience!</div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="mt-10 text-center space-x-6">
+    <%= link_to "Back to Post", post_path(@request.post), class: "text-sm text-brand-color font-semibold hover:text-blue-700 transition-colors duration-200" %>
+    <%= link_to "Your Requests", requests_user_path(current_user.username), class: "text-sm text-brand-color font-semibold hover:text-blue-700 transition-colors duration-200" %>
+  </div>
+</div>
+
+<script>
+    // Thumbnail switching
+    document.querySelectorAll('.thumbnail').forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            document.getElementById('main-image').src = this.dataset.url;
+            document.querySelectorAll('.thumbnail').forEach(t => {
+                t.classList.remove('border-brand-color', 'active-thumbnail', 'border-2')
+                t.classList.add('border-gray-400', 'border-1')
+            });
+            this.classList.remove('border-gray-400');
+            this.classList.add('border-brand-color', 'active-thumbnail', 'border-2');
+        });
+    });
+
+    // Star rating
+    document.querySelectorAll('.star').forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = this.dataset.value;
+            document.getElementById('rating-value').value = rating;
+            document.querySelectorAll('.star').forEach(s => {
+                s.classList.remove('text-yellow-400');
+                s.classList.add('text-gray-300');
+                if (parseInt(s.dataset.value) <= rating) {
+                    s.classList.remove('text-gray-300');
+                    s.classList.add('text-yellow-400');
+                }
+            });
+        });
+        star.addEventListener('mouseover', function() {
+            const rating = this.dataset.value;
+            document.querySelectorAll('.star').forEach(s => {
+                if (parseInt(s.dataset.value) <= rating) {
+                    s.classList.add('text-yellow-400');
+                } else {
+                    s.classList.remove('text-yellow-400');
+                }
+            });
+        });
+        star.addEventListener('mouseout', function() {
+            const currentRating = document.getElementById('rating-value').value;
+            document.querySelectorAll('.star').forEach(s => {
+                s.classList.remove('text-yellow-400');
+                if (currentRating && parseInt(s.dataset.value) <= currentRating) {
+                    s.classList.add('text-yellow-400');
+                } else {
+                    s.classList.add('text-gray-300');
+                }
+            });
+        });
+    });
+</script>

@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :requests, only: [:create] do
+  resources :requests, only: [:create, :show] do
     member do
       post 'accept', to: 'requests#accept', as: :accept
       post 'reject', to: 'requests#reject', as: :reject
