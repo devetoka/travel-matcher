@@ -1,1 +1,1 @@
-APP_NAME = "Travel Matcher"
+APP_NAME = "Zendeet!"

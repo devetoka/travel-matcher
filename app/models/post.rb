@@ -45,6 +45,10 @@ class Post < ApplicationRecord
       .order(created_at: :desc)
   end
 
+  def traveler_post?
+    post_type == "traveler"
+  end
+
   private
 
   def sender_post?

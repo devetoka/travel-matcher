@@ -2,6 +2,7 @@ class Request < ApplicationRecord
   include ImageValidation
   belongs_to :post
   belongs_to :requester, class_name: "User"
+  has_many :reviews, dependent: :destroy
 
   has_many_attached :images
 
@@ -22,6 +23,10 @@ class Request < ApplicationRecord
     accepted?
   end
 
+  def reviewable?
+    accepted?
+  end
+
   def requested_by_sender?
     post.post_type == "traveler"
   end
@@ -30,6 +35,10 @@ class Request < ApplicationRecord
     return nil unless current_user || accepted?
 
     requester == current_user ? post.user : requester
+  end
+
+  def can_accept_request?(user)
+    post.post_type == "traveler" && pending? && user == post.user
   end
 
   private

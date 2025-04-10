@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_28_213242) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_10_095709) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -76,6 +76,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_28_213242) do
     t.index ["status"], name: "index_requests_on_status"
   end
 
+  create_table "reviews", force: :cascade do |t|
+    t.bigint "request_id", null: false
+    t.bigint "reviewer_id", null: false
+    t.bigint "reviewee_id", null: false
+    t.integer "rating"
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["request_id"], name: "index_reviews_on_request_id"
+    t.index ["reviewee_id"], name: "index_reviews_on_reviewee_id"
+    t.index ["reviewer_id"], name: "index_reviews_on_reviewer_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -106,4 +119,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_28_213242) do
   add_foreign_key "posts", "users"
   add_foreign_key "requests", "posts"
   add_foreign_key "requests", "users", column: "requester_id"
+  add_foreign_key "reviews", "requests"
+  add_foreign_key "reviews", "users", column: "reviewee_id"
+  add_foreign_key "reviews", "users", column: "reviewer_id"
 end

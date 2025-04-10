@@ -48,7 +48,7 @@
         <% if @request.description.present? %>
           <p class="text-sm bg-gray-50 p-3 shadow-inner">
             <span class="font-semibold text-gray-900 block mb-1">Message:</span>
-            <span class="text-gray-600 italic"><%= @request.description %></span>
+            <span class="text-gray-600 itaølic"><%= @request.description %></span>
           </p>
         <% end %>
         <p class="text-sm text-gray-500">
@@ -57,11 +57,15 @@
       </div>
 
       <!-- Accept/Reject Buttons (Traveler Only) -->
-      <% if @request.post.user == current_user && @request.pending? %>
+      <% if @request.can_accept_request?(current_user) %>
         <div class="text-right space-x-2">
           <%= link_to "Accept", accept_request_path(@request), data: {turbo_method: 'post', turbo_confirm: "Are you sure you want to accept '#{@request.description}'?"}, class: "bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium hover:bg-green-600 transition-colors duration-200" %>
           <%= link_to "Reject", reject_request_path(@request), data: {turbo_method: 'post', turbo_confirm: "Are you sure you want to reject '#{@request.description}'?"}, class: "bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium hover:bg-red-600 transition-colors duration-200" %>
         </div>
+        <% elsif @request.pending? %>
+        <p class="text-sm text-gray-500">
+          <span class="font-semibold text-gray-900"> Waiting for the traveler to accept your request</span>
+        </p>
       <% end %>
 
       <!-- Milestone Update -->
@@ -80,9 +84,14 @@
   <!-- Other Party Profile -->
   <div class="mt-8 bg-gradient-to-br from-gray-50 to-white shadow-lg p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
     <h2 class="text-2xl font-bold text-brand-color mb-6">
-      <%= @request.requester == current_user ? "Traveler" : "Sender" %> Spotlight
+<!--     if its a traveler post, spotlight the sender-->
+      <% if @request.post.user == current_user %>
+        <%= @request.post.post_type == "sender" ? "Traveler Spotlight" : "Sender Spotlight" %>
+      <% else %>
+        <%= @request.post.post_type == "traveler" ? "Traveler Spotlight" : "Sender Spotlight" %>
+      <% end %>
     </h2>
-    <% other_party = @request.requester == current_user ? @request.post.user : @request.requester %>
+    <% other_party = @other_party %>
     <div class="space-y-4 text-gray-700">
       <div class="flex items-center space-x-3">
         <div class="h-12 w-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-semibold text-xl">
@@ -117,9 +126,18 @@
   <div class="mt-8 bg-white shadow-lg p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
     <h2 class="text-2xl font-bold text-brand-color mb-6">Community Feedback</h2>
     <div class="space-y-6">
-      <% if @request.accepted? %>
-        <!-- Review Form with Stars -->
-        <%= form_with url: "#", local: true, class: "space-y-5 bg-gray-50 p-4 shadow-inner transition-all duration-200 hover:shadow-md" do |form| %>
+      <% if @request.reviewable? && @existing_review.nil? %>
+        <!-- Review Form -->
+        <%= form_with model: @review, url: review_request_path(@request), local: true, class: "space-y-5 bg-gray-50 p-4 shadow-inner transition-all duration-200 hover:shadow-md" do |form| %>
+          <% if @review.errors.any? %>
+            <div class="bg-red-100 text-red-700 p-3">
+              <ul class="list-disc pl-5">
+                <% @review.errors.full_messages.each do |msg| %>
+                  <li><%= msg %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
           <div>
             <%= form.label :rating, "Rate Your Experience", class: "block text-sm font-semibold text-gray-800 mb-2" %>
             <div class="flex space-x-1" id="star-rating">
@@ -137,11 +155,44 @@
           </div>
           <%= form.submit "Share Review", class: "w-full bg-brand-color text-white py-2 px-4 text-sm font-semibold hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 shadow-md" %>
         <% end %>
+      <% elsif @existing_review.present? %>
+        <div class="bg-gray-50 p-4 shadow-inner">
+          <p class="text-sm font-semibold text-gray-800">Your Review</p>
+          <div class="flex space-x-1 mt-2">
+            <% @existing_review.rating.times do %>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.39 2.46a1 1 0 00-.363 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.39-2.46a1 1 0 00-1.175 0l-3.39 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.363-1.118l-3.39-2.46c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z"></path></svg>
+            <% end %>
+          </div>
+          <% if @existing_review.comment.present? %>
+            <p class="text-sm text-gray-600 italic mt-2">"<%= @existing_review.comment %>"</p>
+          <% end %>
+          <p class="text-xs text-gray-500 mt-2">Posted <%= time_ago_in_words(@existing_review.created_at) %> ago</p>
+        </div>
       <% else %>
-        <p class="text-sm text-gray-500 italic bg-gray-50 p-3 shadow-inner">Reviews unlock once the request is accepted.</p>
+        <p class="text-sm text-gray-500 italic bg-gray-50 p-3 shadow-inner">Reviews unlock once the parcel is delivered.</p>
       <% end %>
-      <!-- Placeholder for Reviews -->
-      <div class="text-sm text-gray-500 bg-gray-50 p-3 shadow-inner italic">No reviews yet—be the first to share your experience!</div>
+
+      <!-- Display Other Reviews -->
+      <% if @other_reviews.any? %>
+        <div class="mt-6 space-y-4">
+          <% @other_reviews.each do |review| %>
+            <div class="bg-gray-50 p-4 shadow-inner">
+              <p class="text-sm font-semibold text-gray-800">
+                <%= link_to "@#{review.reviewer.username}", user_path(review.reviewer.username), class: "text-brand-color hover:text-blue-700" %>
+              </p>
+              <div class="flex space-x-1 mt-2">
+                <% review.rating.times do %>
+                  <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.39 2.46a1 1 0 00-.363 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.39-2.46a1 1 0 00-1.175 0l-3.39 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.363-1.118l-3.39-2.46c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z"></path></svg>
+                <% end %>
+              </div>
+              <% if review.comment.present? %>
+                <p class="text-sm text-gray-600 italic mt-2">"<%= review.comment %>"</p>
+              <% end %>
+              <p class="text-xs text-gray-500 mt-2">Posted <%= time_ago_in_words(review.created_at) %> ago</p>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
 

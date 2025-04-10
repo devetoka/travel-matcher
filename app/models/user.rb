@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :posts
   has_many :requests, foreign_key: "requester_id", dependent: :destroy
   has_many :received_requests, through: :posts, source: :requests
+  has_many :received_reviews, class_name: "Review", foreign_key: "reviewee_id", dependent: :destroy
   has_one_attached :profile_picture
 
   validates :username, presence: true, uniqueness: true, length: { minimum: 4, maximum: 20}

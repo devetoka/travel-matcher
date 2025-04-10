@@ -32,6 +32,7 @@ Rails.application.routes.draw do
     member do
       post 'accept', to: 'requests#accept', as: :accept
       post 'reject', to: 'requests#reject', as: :reject
+      post 'review', to: 'requests#create_review'
     end
   end
 
