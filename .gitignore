@@ -24,17 +24,19 @@
 !/tmp/pids/.keep
 
 # Ignore storage (uploaded files in development and any SQLite databases).
-/storage/*
-!/storage/.keep
+/zendeet/storage/*
+!/zendeet/storage/.keep
 /tmp/storage/*
 !/tmp/storage/
 !/tmp/storage/.keep
 
-/public/assets
-/public/uploads
+.docker
+
+/zendeet/public/assets
+/zendeet/public/uploads
 
 # Ignore master key for decrypting credentials and more.
-/config/master.key
+/zendeet/config/master.key
 
-/app/assets/builds/*
-!/app/assets/builds/.keep
+/zendeet/app/assets/builds/*
+!/zendeet/app/assets/builds/.keep

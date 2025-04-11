@@ -11,11 +11,11 @@ WORKDIR /app
 
 RUN gem install bundler
 
-COPY Gemfile ./
+COPY ./zendeet/Gemfile ./
 
 RUN bundle install
 
-COPY . .
+COPY ./zendeet .
 
 EXPOSE 3000
 

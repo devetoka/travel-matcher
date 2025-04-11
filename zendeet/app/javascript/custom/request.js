@@ -24,13 +24,14 @@ function hideModal() {
 }
 
 function showImageModal(imageUrl) {
-    console.log('image')
+    if (!document.getElementById('full-image')) return
     const modal = document.getElementById('image-modal');
     document.getElementById('full-image').src = imageUrl;
     modal.classList.remove('hidden');
 }
 
 function hideImageModal() {
+    if (!document.getElementById('image-modal')) return
     document.getElementById('image-modal').classList.add('hidden');
 }
 
