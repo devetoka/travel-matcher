@@ -16,3 +16,7 @@ Runs on:
 * Docker
 
 * Turbo
+
+
+run ```docker-compose up --build``` to start the app
+run ```docker-compose run --rm app rails db:migrate``` to migrate the database
