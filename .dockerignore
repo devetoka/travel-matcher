@@ -11,7 +11,7 @@
 !/.env*.erb
 
 # Ignore all default key files.
-/config/master.key
+/zendeet/config/master.key
 /config/credentials/*.key
 
 # Ignore all logfiles and tempfiles.
@@ -25,14 +25,14 @@
 !/tmp/pids/.keep
 
 # Ignore storage (uploaded files in development and any SQLite databases).
-/storage/*
-!/storage/.keep
+/zendeet/storage/*
+!/zendeet/storage/.keep
 /tmp/storage/*
 !/tmp/storage/.keep
 
 # Ignore assets.
 /node_modules/
-/app/assets/builds/*
-!/app/assets/builds/.keep
-/public/assets
-Gemfile.lock
+/zendeet/app/assets/builds/*
+!/zendeet/app/assets/builds/.keep
+/zendeet/public/assets
+zendeet/Gemfile2.lock
